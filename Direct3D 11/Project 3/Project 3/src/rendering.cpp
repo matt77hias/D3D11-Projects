@@ -107,23 +107,6 @@ HRESULT Renderer::InitDevice() {
 			&m_feature_level,			// The address of a pointer to the supported feature level.
 			&device_context			// The address of a pointer to the ID3D11DeviceContext.
 		);
-
-		if (result_device == E_INVALIDARG) {
-			// DirectX 11.0 platforms do not recognize D3D_FEATURE_LEVEL_11_1
-			result_device = D3D11CreateDevice(
-				NULL,							// Default adapter
-				m_driver_type,					// Driver type
-				NULL,							// A handle to a DLL that implements a software rasterizer.
-				create_device_flags,			// The runtime layers to enable.
-				&g_feature_levels[1],			// The order of feature levels to attempt to create.
-				_countof(g_feature_levels) - 1,	// The number of feature levels.
-				D3D11_SDK_VERSION,				// The SDK version.
-				&device,						// The address of a pointer to the ID3D11Device that represents the device created.
-				&m_feature_level,				// The address of a pointer to the supported feature level.
-				&device_context				// The address of a pointer to the ID3D11DeviceContext.
-			);
-		}
-
 		if (SUCCEEDED(result_device)) {
 			break;
 		}
