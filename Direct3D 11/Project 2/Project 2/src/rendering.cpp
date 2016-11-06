@@ -223,8 +223,11 @@ HRESULT Renderer::InitDevice() {
 void Renderer::Render() {
 	// A solarized dark background color (some basic colors can be found in <directxcolors.h>)
 	const DirectX::XMVECTORF32 background_color = { 0.0f, 0.117647058f, 0.149019608f, 1.000000000f };
+	
+	// Clear the back buffer.
 	m_device_context2->ClearRenderTargetView(m_render_target_view, background_color);
 	
+	// Present the back buffer to the front buffer.
 	m_swap_chain2->Present(0, 0);
 }
 

@@ -7,6 +7,8 @@
 
 #include <directxcolors.h>
 
+using namespace DirectX;
+
 #pragma endregion
 
 //-----------------------------------------------------------------------------
@@ -38,7 +40,7 @@ extern "C" {
 #pragma region
 
 Renderer::Renderer(HWND hwindow) : m_loaded(false), m_hwindow(hwindow), m_render_target_view(NULL), m_swap_chain2 (NULL), m_device_context2(NULL), m_device2(NULL),
-		m_vertex_shader(NULL), m_pixel_shader(NULL), m_vertex_layout(NULL), m_vertex_buffer(NULL) {
+		m_vertex_shader(NULL), m_pixel_shader(NULL), m_vertex_layout(NULL), m_vertex_buffer(NULL), m_index_buffer(NULL), m_constant_buffer(NULL) {
 	const HRESULT result_init = InitDevice();
 	if (FAILED(result_init)) {
 		return;
@@ -55,6 +57,12 @@ Renderer::~Renderer() {
 	}
 
 	// Release D3D11 components
+	if (m_constant_buffer) {
+		m_constant_buffer->Release();
+	}
+	if (m_index_buffer) {
+		m_index_buffer->Release();
+	}
 	if (m_vertex_buffer) {
 		m_vertex_buffer->Release();
 	}
@@ -280,10 +288,10 @@ HRESULT Renderer::InitDevice() {
 		return result_pixel_shader;
 	}
 
-	// Create the vertex buffer.
-	const HRESULT result_vertex_buffer = InitScene();
-	if (FAILED(result_vertex_buffer)) {
-		return result_vertex_buffer;
+	// Create the vertex, index and constant buffer.
+	const HRESULT result_scene = InitScene();
+	if (FAILED(result_scene)) {
+		return result_scene;
 	}
 	// Set the vertex buffer.
 	UINT stride = sizeof(Vertex);	// The size (in bytes) of the elements that are to be used from a vertex buffer.
@@ -294,6 +302,11 @@ HRESULT Renderer::InitDevice() {
 	// 4. A pointer to an array of stride values.
 	// 5. A pointer to an array of offset values.
 	m_device_context2->IASetVertexBuffers(0, 1, &m_vertex_buffer, &stride, &offset);
+	// Set the index buffer.
+	// 1. A pointer to an ID3D11Buffer object.
+	// 2. The format of the data in the index buffer.
+	// 3. Offset (in bytes) from the start of the index buffer to the first index to use.
+	m_device_context2->IASetIndexBuffer(m_index_buffer, DXGI_FORMAT_R16_UINT, 0);
 	// Bind information about the primitive type, and data order that describes input data for the input assembler stage.
 	m_device_context2->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -301,48 +314,147 @@ HRESULT Renderer::InitDevice() {
 }
 
 HRESULT Renderer::InitScene() {
-	// Create the vertices.
-	const Vertex vertices[] = {
-		XMFLOAT3( 0.0f,  0.5f, 0.5f),
-		XMFLOAT3( 0.5f, -0.5f, 0.5f),
-		XMFLOAT3(-0.5f, -0.5f, 0.5f),
-	};
-	
-	// Describe the buffer resource.
-	D3D11_BUFFER_DESC buffer_desc;
-	ZeroMemory(&buffer_desc, sizeof(buffer_desc));
-	buffer_desc.ByteWidth		= sizeof(vertices);			// Size of the buffer in bytes.
-	buffer_desc.Usage			= D3D11_USAGE_DEFAULT;		// How the buffer is expected to be read from and written to.
-	buffer_desc.BindFlags		= D3D11_BIND_VERTEX_BUFFER; // How the buffer will be bound to the pipeline.
-	buffer_desc.CPUAccessFlags	= 0;						// No CPU access is necessary.
-	
-	// Specify data for initializing a subresource.
-	D3D11_SUBRESOURCE_DATA init_data;
-	ZeroMemory(&init_data, sizeof(init_data));
-	init_data.pSysMem			= vertices;					// A pointer to the initialization data.
-	
-	// Create the vertex buffer.
-	// 1. A pointer to a D3D11_BUFFER_DESC structure that describes the buffer.
-	// 2. A pointer to a D3D11_SUBRESOURCE_DATA structure that describes the initialization data.
-	// 3. Address of a pointer to the ID3D11Buffer interface for the buffer object created.
-	return m_device2->CreateBuffer(&buffer_desc, &init_data, &m_vertex_buffer);
+	// Vertex buffer setup
+	{
+		// Create the vertices.
+		const Vertex vertices[] = {
+			{ XMFLOAT3(-1.0f,  1.0f, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
+			{ XMFLOAT3( 1.0f,  1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
+			{ XMFLOAT3( 1.0f,  1.0f,  1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },
+			{ XMFLOAT3(-1.0f,  1.0f,  1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
+			{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) },
+			{ XMFLOAT3( 1.0f, -1.0f, -1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) },
+			{ XMFLOAT3( 1.0f, -1.0f,  1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) },
+			{ XMFLOAT3(-1.0f, -1.0f,  1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f) }
+		};
+
+		// Describe the buffer resource.
+		D3D11_BUFFER_DESC buffer_desc;
+		ZeroMemory(&buffer_desc, sizeof(buffer_desc));
+		buffer_desc.ByteWidth      = sizeof(vertices);		   // Size of the buffer in bytes.
+		buffer_desc.Usage          = D3D11_USAGE_DEFAULT;	   // How the buffer is expected to be read from and written to.
+		buffer_desc.BindFlags      = D3D11_BIND_VERTEX_BUFFER; // How the buffer will be bound to the pipeline.
+		buffer_desc.CPUAccessFlags = 0;						   // No CPU access is necessary.
+
+		// Specify data for initializing a subresource.
+		D3D11_SUBRESOURCE_DATA init_data;
+		ZeroMemory(&init_data, sizeof(init_data));
+		init_data.pSysMem          = vertices;				   // A pointer to the initialization data.
+
+		// Create the vertex buffer.
+		// 1. A pointer to a D3D11_BUFFER_DESC structure that describes the buffer.
+		// 2. A pointer to a D3D11_SUBRESOURCE_DATA structure that describes the initialization data.
+		// 3. Address of a pointer to the ID3D11Buffer interface for the buffer object created.
+		const HRESULT result_vertex_buffer = m_device2->CreateBuffer(&buffer_desc, &init_data, &m_vertex_buffer);
+		if (FAILED(result_vertex_buffer)) {
+			return result_vertex_buffer;
+		}
+	}
+	// Index buffer setup
+	{
+		// Create the indices.
+		const WORD indices[] = {
+			3, 1, 0,
+			2, 1, 3,
+			0, 5, 4,
+			1, 5, 0,
+			3, 4, 7,
+			0, 4, 3,
+			1, 6, 5,
+			2, 6, 1,
+			2, 7, 6,
+			3, 7, 2,
+			6, 4, 5,
+			7, 4, 6,
+		};
+
+		// Describe the buffer resource.
+		D3D11_BUFFER_DESC buffer_desc;
+		ZeroMemory(&buffer_desc, sizeof(buffer_desc));
+		buffer_desc.ByteWidth      = sizeof(indices);		  // Size of the buffer in bytes.
+		buffer_desc.Usage          = D3D11_USAGE_DEFAULT;	  // How the buffer is expected to be read from and written to.
+		buffer_desc.BindFlags      = D3D11_BIND_INDEX_BUFFER; // How the buffer will be bound to the pipeline.
+		buffer_desc.CPUAccessFlags = 0;						  // No CPU access is necessary.
+
+		// Specify data for initializing a subresource.
+		D3D11_SUBRESOURCE_DATA init_data;
+		ZeroMemory(&init_data, sizeof(init_data));
+		init_data.pSysMem          = indices;				  // A pointer to the initialization data.
+
+		// Create the index buffer.
+		// 1. A pointer to a D3D11_BUFFER_DESC structure that describes the buffer.
+		// 2. A pointer to a D3D11_SUBRESOURCE_DATA structure that describes the initialization data.
+		// 3. Address of a pointer to the ID3D11Buffer interface for the buffer object created.
+		const HRESULT result_index_buffer = m_device2->CreateBuffer(&buffer_desc, &init_data, &m_index_buffer);
+		if (FAILED(result_index_buffer)) {
+			return result_index_buffer;
+		}
+	}
+	// Constant buffer setup
+	{
+		// Describe the buffer resource.
+		D3D11_BUFFER_DESC buffer_desc;
+		ZeroMemory(&buffer_desc, sizeof(buffer_desc));
+		buffer_desc.ByteWidth      = sizeof(ModelTransform);     // Size of the buffer in bytes.
+		buffer_desc.Usage          = D3D11_USAGE_DEFAULT;	     // How the buffer is expected to be read from and written to.
+		buffer_desc.BindFlags      = D3D11_BIND_CONSTANT_BUFFER; // How the buffer will be bound to the pipeline.
+		buffer_desc.CPUAccessFlags = 0;						     // No CPU access is necessary.
+		
+		// Create the index buffer.
+		// 1. A pointer to a D3D11_BUFFER_DESC structure that describes the buffer.
+		// 2. A pointer to a D3D11_SUBRESOURCE_DATA structure that describes the initialization data.
+		// 3. Address of a pointer to the ID3D11Buffer interface for the buffer object created.
+		const HRESULT result_constant_buffer = m_device2->CreateBuffer(&buffer_desc, NULL, &m_constant_buffer);
+		if (FAILED(result_constant_buffer)) {
+			return result_constant_buffer;
+		}
+		
+		// Initialize the model to world matrix
+		m_model_transform.m_model_to_world = XMMatrixIdentity();
+		// Initialize the world to view matrix
+		XMVECTOR p_eye    = XMVectorSet(0.0f, 1.0f, -5.0f, 0.0f);
+		XMVECTOR p_focus  = XMVectorSet(0.0f, 1.0f,  0.0f, 0.0f);
+		XMVECTOR d_up     = XMVectorSet(0.0f, 1.0f,  0.0f, 0.0f);
+		m_model_transform.m_world_to_view = XMMatrixLookAtLH(p_eye, p_focus, d_up);
+		// Initialize the view to projection matrix
+		RECT client_rectangle;
+		GetClientRect(m_hwindow, &client_rectangle);
+		const UINT width  = client_rectangle.right  - client_rectangle.left;
+		const UINT height = client_rectangle.bottom - client_rectangle.top;
+		const float aspect_ratio = width / (float)height;
+		m_model_transform.m_view_to_projection = XMMatrixPerspectiveFovLH(XM_PIDIV2, aspect_ratio, 0.01f, 100.0f);
+	}
+
+	return S_OK;
 }
 
-void Renderer::Render() {
+void Renderer::Render(double elapsed_time) {
 	// A solarized dark background color (some basic colors can be found in <directxcolors.h>)
 	const DirectX::XMVECTORF32 background_color = { 0.0f, 0.117647058f, 0.149019608f, 1.000000000f };
-	
-	// Clear the back buffer
+
+	// Animate the cube.
+	m_model_transform.m_model_to_world = XMMatrixRotationY((float)elapsed_time);
+
+	// Clear the back buffer.
 	m_device_context2->ClearRenderTargetView(m_render_target_view, background_color);
+
+	// Update the transforms.
+	ModelTransform buffer;
+	buffer.m_model_to_world     = XMMatrixTranspose(m_model_transform.m_model_to_world);
+	buffer.m_world_to_view      = XMMatrixTranspose(m_model_transform.m_world_to_view);
+	buffer.m_view_to_projection = XMMatrixTranspose(m_model_transform.m_view_to_projection);
+	m_device_context2->UpdateSubresource(m_constant_buffer, 0, NULL, &buffer, 0, 0);
 
 	// Set a vertex and pixel shader to the device.
 	m_device_context2->VSSetShader(m_vertex_shader, NULL, 0);
+	m_device_context2->VSSetConstantBuffers(0, 1, &m_constant_buffer);
 	m_device_context2->PSSetShader(m_pixel_shader, NULL, 0);
 
 	// Draw non-indexed, non-instanced primitives.
-	// 1. Number of vertices to draw.
-	// 2. Index of the first vertex.
-	m_device_context2->Draw(3, 0);
+	// 1. Number of indices to draw.
+	// 2. Index of the first index.
+	// 3. A value added to each index before reading.
+	m_device_context2->DrawIndexed(36, 0, 0);
 	
 	// Present the back buffer to the front buffer.
 	m_swap_chain2->Present(0, 0);

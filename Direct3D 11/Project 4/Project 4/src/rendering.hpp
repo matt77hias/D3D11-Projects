@@ -61,8 +61,11 @@ public:
 
 	/**
 	 Renders the current frame.
+
+	 @return		elapsed_time
+					The elapsed time.
 	 */
-	void Render();
+	void Render(double elapsed_time);
 
 private:
 
@@ -101,6 +104,10 @@ private:
 	ID3D11PixelShader      *m_pixel_shader;
 	ID3D11InputLayout      *m_vertex_layout;
 	ID3D11Buffer           *m_vertex_buffer;
+	ID3D11Buffer           *m_index_buffer;
+	ID3D11Buffer           *m_constant_buffer;
+
+	ModelTransform			m_model_transform;
 };
 
 #pragma endregion

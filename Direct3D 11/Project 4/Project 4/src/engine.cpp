@@ -189,6 +189,9 @@ void Engine::Run(int nCmdShow) {
 	// Set the specified window's show state.
 	ShowWindow(m_hwindow, nCmdShow);
 
+	Timer timer;
+	timer.Start();
+
 	// Enter the message loop.
 	MSG msg;
 	SecureZeroMemory(&msg, sizeof(MSG));
@@ -203,7 +206,8 @@ void Engine::Run(int nCmdShow) {
 			DispatchMessage(&msg);
 		}
 		else {
-			m_renderer->Render();
+			const double elapsed_time = timer.Time();
+			m_renderer->Render(elapsed_time);
 		}
 	}
 }

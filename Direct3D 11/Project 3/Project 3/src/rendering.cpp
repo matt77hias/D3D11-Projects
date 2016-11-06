@@ -305,7 +305,7 @@ HRESULT Renderer::InitScene() {
 	const Vertex vertices[] = {
 		XMFLOAT3( 0.0f,  0.5f, 0.5f),
 		XMFLOAT3( 0.5f, -0.5f, 0.5f),
-		XMFLOAT3(-0.5f, -0.5f, 0.5f),
+		XMFLOAT3(-0.5f, -0.5f, 0.5f)
 	};
 	
 	// Describe the buffer resource.
@@ -332,7 +332,7 @@ void Renderer::Render() {
 	// A solarized dark background color (some basic colors can be found in <directxcolors.h>)
 	const DirectX::XMVECTORF32 background_color = { 0.0f, 0.117647058f, 0.149019608f, 1.000000000f };
 	
-	// Clear the back buffer
+	// Clear the back buffer.
 	m_device_context2->ClearRenderTargetView(m_render_target_view, background_color);
 
 	// Set a vertex and pixel shader to the device.

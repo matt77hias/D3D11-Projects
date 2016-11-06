@@ -29,7 +29,9 @@ using std::cout;
 #pragma region
 
 #include "version.hpp"
+#include "timer.hpp"
 #include "geometry.hpp"
+#include "transform.hpp"
 #include "rendering.hpp"
 
 #pragma endregion
