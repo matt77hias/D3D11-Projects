@@ -2,9 +2,9 @@
 Projects to start learning Direct3D
 
 ## About
-* Project 1: Creating a window for displaying.
-* Project 2: Rendering the background color of window.
-* Project 3: Rendering a triangle.
+* [Project 1](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%201): Creating a window for displaying.
+* [Project 2](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%202: Rendering the background color of window.
+* [Project 3](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%203: Rendering a triangle.
 
 ## Development
 * **Platform**: (minimum) Windows 8.1 32 Bit and 64 Bit (Windows API + Direct3D 11.1)
