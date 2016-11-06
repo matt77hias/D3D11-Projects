@@ -21,6 +21,9 @@
     <ClCompile Include="Project 2\src\engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Project 2\src\rendering.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Project 2\src\stdafx.h">
@@ -33,6 +36,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Project 2\src\version.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Project 2\src\rendering.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

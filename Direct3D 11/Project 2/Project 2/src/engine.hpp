@@ -28,6 +28,7 @@ using std::cout;
 #pragma region
 
 #include "version.hpp"
+#include "rendering.hpp"
 
 #pragma endregion
 
@@ -73,17 +74,29 @@ public:
 		return m_hwindow;
 	}
 
+	/**
+	 Checks whether this engine is loaded.
+
+	 @return		@c true if this engine is loaded.
+					@c false otherwise.
+	 */
+	bool IsLoaded() const {
+		return m_loaded;
+	}
+
 protected:
 
 	/**
-	 Renders the current frame.
+	 A pointer to the renderer of this engine.
 	 */
-	void Render();
+	Renderer *m_renderer;
 
 private:
 
 	/**
 	 Initializes the engine window of this engine.
+
+	 @return		A success/error value.
 	 */
 	HRESULT InitializeWindow();
 
@@ -91,8 +104,7 @@ private:
 	 Allocates a console to this engine for basic io and
 	 redirects stdin, stdout and stderr to the allocated console.
 	
-	 @return		@c true if a console is successfully attached.
-					@c false otherwise.
+	 @return		A success/error value.
 	 */
 	HRESULT AttachConsole();
 
@@ -105,6 +117,11 @@ private:
 	 Main window handle of this engine.
 	 */
 	HWND m_hwindow;
+
+	/**
+	 Flag indicating wether this engine is loaded.
+	 */
+	bool m_loaded;
 };
 
 #pragma endregion

@@ -65,17 +65,33 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 //-----------------------------------------------------------------------------
 #pragma region
 
-Engine::Engine(HINSTANCE hinstance) : m_hinstance(hinstance) {
+Engine::Engine(HINSTANCE hinstance) : m_loaded(false), m_hinstance(hinstance), m_renderer(NULL) {
 
 	//Initialize a window.
-	InitializeWindow();
+	const HRESULT result_window = InitializeWindow();
+	if (FAILED(result_window)) {
+		return;
+	}
 
 	// Attach a console.
-	AttachConsole();
+	const HRESULT result_console = AttachConsole();
+	if (FAILED(result_console)) {
+		return;
+	}
 	PrintConsoleHeader();
+
+	// Create renderer.
+	m_renderer = new Renderer(m_hwindow);
+
+	m_loaded = m_renderer->IsLoaded();
 }
 
 Engine::~Engine() {
+
+	if (m_renderer) {
+		delete m_renderer;
+	}
+
 	// Unregister the window class.
 	UnregisterClass(L"WindowClass", m_hinstance);
 }
@@ -166,6 +182,10 @@ HRESULT Engine::AttachConsole() {
 }
 
 void Engine::Run(int nCmdShow) {
+	if (!m_loaded) {
+		return;
+	}
+
 	// Set the specified window's show state.
 	ShowWindow(m_hwindow, nCmdShow);
 
@@ -183,12 +203,10 @@ void Engine::Run(int nCmdShow) {
 			DispatchMessage(&msg);
 		}
 		else {
-			Render();
+			m_renderer->Render();
 		}
 	}
 }
-
-void Engine::Render() {}
 
 #pragma endregion
 
