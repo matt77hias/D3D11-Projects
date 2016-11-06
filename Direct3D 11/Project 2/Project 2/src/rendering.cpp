@@ -15,17 +15,17 @@
 #pragma region
 
 /**
-NVIDIA Optimus enablement
+ NVIDIA Optimus enablement
 
-@pre NVIDIA Control Panel > Preferred graphics processor > "Auto-select"
-*/
+ @pre NVIDIA Control Panel > Preferred graphics processor > "Auto-select"
+ */
 extern "C" {
 	_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
 }
 
 /**
-AMD "Optimus" enablement
-*/
+ AMD "Optimus" enablement
+ */
 extern "C" {
 	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
