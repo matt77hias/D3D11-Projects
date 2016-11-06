@@ -73,17 +73,22 @@ public:
 		return m_hwindow;
 	}
 
-protected:
-
 	/**
-	 Renders the current frame.
+	 Checks whether this engine is loaded.
+
+	 @return		@c true if this engine is loaded.
+					@c false otherwise.
 	 */
-	void Render();
+	bool IsLoaded() const {
+		return m_loaded;
+	}
 
 private:
 
 	/**
 	 Initializes the engine window of this engine.
+
+	 @return		A success/error value.
 	 */
 	HRESULT InitializeWindow();
 
@@ -91,8 +96,7 @@ private:
 	 Allocates a console to this engine for basic io and
 	 redirects stdin, stdout and stderr to the allocated console.
 	
-	 @return		@c true if a console is successfully attached.
-					@c false otherwise.
+	 @return		A success/error value.
 	 */
 	HRESULT AttachConsole();
 
@@ -105,6 +109,11 @@ private:
 	 Main window handle of this engine.
 	 */
 	HWND m_hwindow;
+
+	/**
+	 Flag indicating wether this engine is loaded.
+	 */
+	bool m_loaded;
 };
 
 #pragma endregion
