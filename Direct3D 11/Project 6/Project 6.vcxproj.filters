@@ -53,9 +53,6 @@
     <ClInclude Include="Project 6\src\shader_utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Project 6\src\transform.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Project 6\src\timer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

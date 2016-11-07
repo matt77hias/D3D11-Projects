@@ -193,7 +193,6 @@
     <ClInclude Include="Project 6\src\stdafx.h" />
     <ClInclude Include="Project 6\src\targetver.h" />
     <ClInclude Include="Project 6\src\timer.hpp" />
-    <ClInclude Include="Project 6\src\transform.hpp" />
     <ClInclude Include="Project 6\src\version.hpp" />
   </ItemGroup>
   <ItemGroup>

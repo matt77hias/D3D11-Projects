@@ -40,8 +40,13 @@ extern "C" {
 Renderer::Renderer(HWND hwindow) : m_loaded(false), m_hwindow(hwindow), m_render_target_view(NULL), m_swap_chain2 (NULL), m_device_context2(NULL), m_device2(NULL),
 		m_vertex_shader(NULL), m_pixel_shader(NULL), m_vertex_layout(NULL), m_vertex_buffer(NULL), m_index_buffer(NULL), m_constant_buffer(NULL),
 		m_depth_stencil(NULL), m_depth_stencil_view(NULL) {
-	const HRESULT result_init = InitDevice();
-	if (FAILED(result_init)) {
+	
+	const HRESULT result_device = InitDevice();
+	if (FAILED(result_device)) {
+		return;
+	}
+	const HRESULT result_camera = InitCamera();
+	if (FAILED(result_camera)) {
 		return;
 	}
 
@@ -443,20 +448,24 @@ HRESULT Renderer::InitScene() {
 		if (FAILED(result_constant_buffer)) {
 			return result_constant_buffer;
 		}
-		
-		// Initialize the world to view matrix
-		XMVECTOR p_eye    = XMVectorSet(0.0f, 1.0f, -5.0f, 0.0f);
-		XMVECTOR p_focus  = XMVectorSet(0.0f, 1.0f,  0.0f, 0.0f);
-		XMVECTOR d_up     = XMVectorSet(0.0f, 1.0f,  0.0f, 0.0f);
-		camera.m_world_to_view = XMMatrixLookAtLH(p_eye, p_focus, d_up);
-		// Initialize the view to projection matrix
-		RECT client_rectangle;
-		GetClientRect(m_hwindow, &client_rectangle);
-		const UINT width  = client_rectangle.right  - client_rectangle.left;
-		const UINT height = client_rectangle.bottom - client_rectangle.top;
-		const float aspect_ratio = width / (float)height;
-		camera.m_view_to_projection = XMMatrixPerspectiveFovLH(XM_PIDIV2, aspect_ratio, 0.01f, 100.0f);
 	}
+
+	return S_OK;
+}
+
+HRESULT Renderer::InitCamera() {
+	// Initialize the world to view matrix
+	XMVECTOR p_eye   = XMVectorSet(0.0f, 1.0f, -5.0f, 0.0f);
+	XMVECTOR p_focus = XMVectorSet(0.0f, 1.0f,  0.0f, 0.0f);
+	XMVECTOR d_up    = XMVectorSet(0.0f, 1.0f,  0.0f, 0.0f);
+	camera.m_world_to_view = XMMatrixLookAtLH(p_eye, p_focus, d_up);
+	// Initialize the view to projection matrix
+	RECT client_rectangle;
+	GetClientRect(m_hwindow, &client_rectangle);
+	const UINT width = client_rectangle.right - client_rectangle.left;
+	const UINT height = client_rectangle.bottom - client_rectangle.top;
+	const float aspect_ratio = width / (float)height;
+	camera.m_view_to_projection = XMMatrixPerspectiveFovLH(XM_PIDIV2, aspect_ratio, 0.01f, 100.0f);
 
 	return S_OK;
 }

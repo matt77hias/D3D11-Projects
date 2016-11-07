@@ -84,6 +84,13 @@ private:
 	HRESULT InitScene();
 
 	/**
+	 Initializes the camera of this renderer.
+
+	 @return		A success/error value.
+	 */
+	HRESULT InitCamera();
+
+	/**
 	 Main window handle of this renderer.
 	 */
 	HWND m_hwindow;

@@ -32,7 +32,6 @@ using namespace DirectX;
 #include "version.hpp"
 #include "timer.hpp"
 #include "geometry.hpp"
-#include "transform.hpp"
 #include "camera.hpp"
 #include "rendering.hpp"
 

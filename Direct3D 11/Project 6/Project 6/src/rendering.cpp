@@ -37,11 +37,25 @@ extern "C" {
 //-----------------------------------------------------------------------------
 #pragma region
 
+struct ConstantBuffer {
+	XMMATRIX m_model_to_world;
+	XMMATRIX m_world_to_view;
+	XMMATRIX m_view_to_projection;
+	XMFLOAT4 d_lights[2];
+	XMFLOAT4 color_lights[2];
+	XMFLOAT4 output_color;
+};
+
 Renderer::Renderer(HWND hwindow) : m_loaded(false), m_hwindow(hwindow), m_render_target_view(NULL), m_swap_chain2 (NULL), m_device_context2(NULL), m_device2(NULL),
-		m_vertex_shader(NULL), m_pixel_shader(NULL), m_vertex_layout(NULL), m_vertex_buffer(NULL), m_index_buffer(NULL), m_constant_buffer(NULL),
+		m_vertex_shader(NULL), m_pixel_shader(NULL), m_pixel_shader_solid(NULL), m_vertex_layout(NULL), m_vertex_buffer(NULL), m_index_buffer(NULL), m_constant_buffer(NULL),
 		m_depth_stencil(NULL), m_depth_stencil_view(NULL) {
-	const HRESULT result_init = InitDevice();
-	if (FAILED(result_init)) {
+	
+	const HRESULT result_device = InitDevice();
+	if (FAILED(result_device)) {
+		return;
+	}
+	const HRESULT result_camera = InitCamera();
+	if (FAILED(result_camera)) {
 		return;
 	}
 
@@ -73,6 +87,9 @@ Renderer::~Renderer() {
 	}
 	if (m_pixel_shader) {
 		m_pixel_shader->Release();
+	}
+	if (m_pixel_shader_solid) {
+		m_pixel_shader_solid->Release();
 	}
 	if (m_depth_stencil) {
 		m_depth_stencil->Release();
@@ -323,6 +340,24 @@ HRESULT Renderer::InitDevice() {
 		return result_pixel_shader;
 	}
 
+	// Compile the pixel shader.
+	ID3DBlob *pixel_shader_solid_blob = NULL;
+	const HRESULT result_pixel_shader_solid_blob = CompileShaderFromFile(L"Project 6/shaders/effect.fx", "PSSolid", "ps_4_0", &pixel_shader_solid_blob);
+	if (FAILED(result_pixel_shader_solid_blob)) {
+		return result_pixel_shader_solid_blob;
+	}
+	// Create the pixel shader.
+	// 1. A pointer to the compiled pixel shader.
+	// 2. The size of the compiled pixel shader.
+	// 3. A pointer to a class linkage interface.
+	// 4. Address of a pointer to a pixel shader.
+	const HRESULT result_pixel_shader_solid = m_device2->CreatePixelShader(pixel_shader_solid_blob->GetBufferPointer(), pixel_shader_solid_blob->GetBufferSize(), NULL, &m_pixel_shader_solid);
+	// Release the ID3DBlob.
+	pixel_shader_solid_blob->Release();
+	if (FAILED(result_pixel_shader_solid)) {
+		return result_pixel_shader_solid;
+	}
+	
 	// Create the vertex, index and constant buffer.
 	const HRESULT result_scene = InitScene();
 	if (FAILED(result_scene)) {
@@ -353,14 +388,30 @@ HRESULT Renderer::InitScene() {
 	{
 		// Create the vertices.
 		const Vertex vertices[] = {
-			{ XMFLOAT3(-1.0f,  1.0f, -1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
-			{ XMFLOAT3( 1.0f,  1.0f, -1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
-			{ XMFLOAT3( 1.0f,  1.0f,  1.0f), XMFLOAT4(0.0f, 1.0f, 1.0f, 1.0f) },
-			{ XMFLOAT3(-1.0f,  1.0f,  1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) },
-			{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f) },
-			{ XMFLOAT3( 1.0f, -1.0f, -1.0f), XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f) },
-			{ XMFLOAT3( 1.0f, -1.0f,  1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f) },
-			{ XMFLOAT3(-1.0f, -1.0f,  1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f) }
+			{ XMFLOAT3(-1.0f,  1.0f, -1.0f), XMFLOAT3( 0.0f,  1.0f,  0.0f) },
+			{ XMFLOAT3( 1.0f,  1.0f, -1.0f), XMFLOAT3( 0.0f,  1.0f,  0.0f) },
+			{ XMFLOAT3( 1.0f,  1.0f,  1.0f), XMFLOAT3( 0.0f,  1.0f,  0.0f) },
+			{ XMFLOAT3(-1.0f,  1.0f,  1.0f), XMFLOAT3( 0.0f,  1.0f,  0.0f) },
+			{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT3( 0.0f, -1.0f,  0.0f) },
+			{ XMFLOAT3( 1.0f, -1.0f, -1.0f), XMFLOAT3( 0.0f, -1.0f,  0.0f) },
+			{ XMFLOAT3( 1.0f, -1.0f,  1.0f), XMFLOAT3( 0.0f, -1.0f,  0.0f) },
+			{ XMFLOAT3(-1.0f, -1.0f,  1.0f), XMFLOAT3( 0.0f, -1.0f,  0.0f) },
+			{ XMFLOAT3(-1.0f, -1.0f,  1.0f), XMFLOAT3(-1.0f,  0.0f,  0.0f) },
+			{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT3(-1.0f,  0.0f,  0.0f) },
+			{ XMFLOAT3(-1.0f,  1.0f, -1.0f), XMFLOAT3(-1.0f,  0.0f,  0.0f) },
+			{ XMFLOAT3(-1.0f,  1.0f,  1.0f), XMFLOAT3(-1.0f,  0.0f,  0.0f) },
+			{ XMFLOAT3( 1.0f, -1.0f,  1.0f), XMFLOAT3( 1.0f,  0.0f,  0.0f) },
+			{ XMFLOAT3( 1.0f, -1.0f, -1.0f), XMFLOAT3( 1.0f,  0.0f,  0.0f) },
+			{ XMFLOAT3( 1.0f,  1.0f, -1.0f), XMFLOAT3( 1.0f,  0.0f,  0.0f) },
+			{ XMFLOAT3( 1.0f,  1.0f,  1.0f), XMFLOAT3( 1.0f,  0.0f,  0.0f) },
+			{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT3( 0.0f,  0.0f, -1.0f) },
+			{ XMFLOAT3( 1.0f, -1.0f, -1.0f), XMFLOAT3( 0.0f,  0.0f, -1.0f) },
+			{ XMFLOAT3( 1.0f,  1.0f, -1.0f), XMFLOAT3( 0.0f,  0.0f, -1.0f) },
+			{ XMFLOAT3(-1.0f,  1.0f, -1.0f), XMFLOAT3( 0.0f,  0.0f, -1.0f) },
+			{ XMFLOAT3(-1.0f, -1.0f,  1.0f), XMFLOAT3( 0.0f,  0.0f,  1.0f) },
+			{ XMFLOAT3( 1.0f, -1.0f,  1.0f), XMFLOAT3( 0.0f,  0.0f,  1.0f) },
+			{ XMFLOAT3( 1.0f,  1.0f,  1.0f), XMFLOAT3( 0.0f,  0.0f,  1.0f) },
+			{ XMFLOAT3(-1.0f,  1.0f,  1.0f), XMFLOAT3( 0.0f,  0.0f,  1.0f) }
 		};
 
 		// Describe the buffer resource.
@@ -389,18 +440,18 @@ HRESULT Renderer::InitScene() {
 	{
 		// Create the indices.
 		const WORD indices[] = {
-			3, 1, 0,
-			2, 1, 3,
-			0, 5, 4,
-			1, 5, 0,
-			3, 4, 7,
-			0, 4, 3,
-			1, 6, 5,
-			2, 6, 1,
-			2, 7, 6,
-			3, 7, 2,
-			6, 4, 5,
-			7, 4, 6,
+			 3,  1,  0,
+			 2,  1,  3,
+			 6,  4,  5,
+			 7,  4,  6,
+			11,  9,  8,
+			10,  9, 11,
+			14, 12, 13,
+			15, 12, 14,
+			19, 17, 16,
+			18, 17, 19,
+			22, 20, 21,
+			23, 20, 22
 		};
 
 		// Describe the buffer resource.
@@ -430,7 +481,7 @@ HRESULT Renderer::InitScene() {
 		// Describe the buffer resource.
 		D3D11_BUFFER_DESC buffer_desc;
 		ZeroMemory(&buffer_desc, sizeof(buffer_desc));
-		buffer_desc.ByteWidth      = sizeof(ModelTransform);     // Size of the buffer in bytes.
+		buffer_desc.ByteWidth      = sizeof(ConstantBuffer);	 // Size of the buffer in bytes.
 		buffer_desc.Usage          = D3D11_USAGE_DEFAULT;	     // How the buffer is expected to be read from and written to.
 		buffer_desc.BindFlags      = D3D11_BIND_CONSTANT_BUFFER; // How the buffer will be bound to the pipeline.
 		buffer_desc.CPUAccessFlags = 0;						     // No CPU access is necessary.
@@ -443,20 +494,24 @@ HRESULT Renderer::InitScene() {
 		if (FAILED(result_constant_buffer)) {
 			return result_constant_buffer;
 		}
-		
-		// Initialize the world to view matrix
-		XMVECTOR p_eye    = XMVectorSet(0.0f, 1.0f, -5.0f, 0.0f);
-		XMVECTOR p_focus  = XMVectorSet(0.0f, 1.0f,  0.0f, 0.0f);
-		XMVECTOR d_up     = XMVectorSet(0.0f, 1.0f,  0.0f, 0.0f);
-		camera.m_world_to_view = XMMatrixLookAtLH(p_eye, p_focus, d_up);
-		// Initialize the view to projection matrix
-		RECT client_rectangle;
-		GetClientRect(m_hwindow, &client_rectangle);
-		const UINT width  = client_rectangle.right  - client_rectangle.left;
-		const UINT height = client_rectangle.bottom - client_rectangle.top;
-		const float aspect_ratio = width / (float)height;
-		camera.m_view_to_projection = XMMatrixPerspectiveFovLH(XM_PIDIV2, aspect_ratio, 0.01f, 100.0f);
 	}
+
+	return S_OK;
+}
+
+HRESULT Renderer::InitCamera() {
+	// Initialize the world to view matrix
+	XMVECTOR p_eye   = XMVectorSet(0.0f, 4.0f, -10.0f, 0.0f);
+	XMVECTOR p_focus = XMVectorSet(0.0f, 1.0f,   0.0f, 0.0f);
+	XMVECTOR d_up    = XMVectorSet(0.0f, 1.0f,   0.0f, 0.0f);
+	camera.m_world_to_view = XMMatrixLookAtLH(p_eye, p_focus, d_up);
+	// Initialize the view to projection matrix
+	RECT client_rectangle;
+	GetClientRect(m_hwindow, &client_rectangle);
+	const UINT width = client_rectangle.right - client_rectangle.left;
+	const UINT height = client_rectangle.bottom - client_rectangle.top;
+	const float aspect_ratio = width / (float)height;
+	camera.m_view_to_projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, aspect_ratio, 0.01f, 100.0f);
 
 	return S_OK;
 }
@@ -465,14 +520,22 @@ void Renderer::Render(double elapsed_time) {
 	// A solarized dark background color (some basic colors can be found in <directxcolors.h>)
 	const DirectX::XMVECTORF32 background_color = { 0.0f, 0.117647058f, 0.149019608f, 1.000000000f };
 
-	// Animate the first cube.
-	const XMMATRIX model_to_world1	= XMMatrixRotationY((float)elapsed_time);
-	// Animate the second cube.
-	const XMMATRIX spin				= XMMatrixRotationZ((float)-elapsed_time);
-	const XMMATRIX orbit			= XMMatrixRotationY((float)-elapsed_time * 2.0f);
-	const XMMATRIX translate		= XMMatrixTranslation(-4.0f, 0.0f, 0.0f);
-	const XMMATRIX scale			= XMMatrixScaling(0.3f, 0.3f, 0.3f);
-	const XMMATRIX model_to_world2	= scale * spin * translate * orbit;
+	// Animate the cube.
+	const XMMATRIX model_to_world = XMMatrixRotationY((float)elapsed_time);
+	
+	// Setup the lights.
+	XMFLOAT4 d_lights[2] = {
+		XMFLOAT4(-0.577f, 0.577f, -0.577f, 1.0f),
+		XMFLOAT4(0.0f, 0.0f, -1.0f, 1.0f),
+	};
+	const XMFLOAT4 color_lights[2] = {
+		XMFLOAT4(0.0f, 0.5f, 0.0f, 1.0f),
+		XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f)
+	};
+	// Rotate the second light around the origin
+	const XMMATRIX rotation = XMMatrixRotationY((float)-elapsed_time * 2.0f);
+	const XMVECTOR d_light = XMVector3Transform(XMLoadFloat4(&d_lights[1]), rotation);
+	XMStoreFloat4(&d_lights[1], d_light);
 
 	// Clear the back buffer.
 	m_device_context2->ClearRenderTargetView(m_render_target_view, background_color);
@@ -483,23 +546,33 @@ void Renderer::Render(double elapsed_time) {
 	m_device_context2->VSSetShader(m_vertex_shader, NULL, 0);
 	m_device_context2->VSSetConstantBuffers(0, 1, &m_constant_buffer);
 	m_device_context2->PSSetShader(m_pixel_shader, NULL, 0);
+	m_device_context2->PSSetConstantBuffers(0, 1, &m_constant_buffer);
 
-	// Draw the first cube.
-	ModelTransform buffer;
-	buffer.m_model_to_world			= XMMatrixTranspose(model_to_world1);
+	// Draw the cube.
+	ConstantBuffer buffer;
+	buffer.m_model_to_world			= XMMatrixTranspose(model_to_world);
 	buffer.m_world_to_view			= XMMatrixTranspose(camera.m_world_to_view);
 	buffer.m_view_to_projection		= XMMatrixTranspose(camera.m_view_to_projection);
+	buffer.d_lights[0]				= d_lights[0];
+	buffer.d_lights[1]				= d_lights[1];
+	buffer.color_lights[0]			= color_lights[0];
+	buffer.color_lights[1]			= color_lights[1];
+	buffer.output_color				= XMFLOAT4(0, 0, 0, 0);
 	m_device_context2->UpdateSubresource(m_constant_buffer, 0, NULL, &buffer, 0, 0);
 	m_device_context2->DrawIndexed(36, 0, 0);
 
-	// Draw the second cube.
-	ModelTransform buffer2;
-	buffer2.m_model_to_world		= XMMatrixTranspose(model_to_world2);
-	buffer2.m_world_to_view			= XMMatrixTranspose(camera.m_world_to_view);
-	buffer2.m_view_to_projection	= XMMatrixTranspose(camera.m_view_to_projection);
-	m_device_context2->UpdateSubresource(m_constant_buffer, 0, NULL, &buffer2, 0, 0);
-	m_device_context2->DrawIndexed(36, 0, 0);
-	
+	// Draw each light.
+	for (int i = 0; i < 2; ++i) {
+		XMMATRIX scale = XMMatrixScaling(0.2f, 0.2f, 0.2f);
+		XMMATRIX model_to_world_i = scale * XMMatrixTranslationFromVector(5.0f * XMLoadFloat4(&d_lights[i]));
+
+		buffer.m_model_to_world = XMMatrixTranspose(model_to_world_i);
+		buffer.output_color     = color_lights[i];
+		m_device_context2->UpdateSubresource(m_constant_buffer, 0, NULL, &buffer, 0, 0);
+		m_device_context2->PSSetShader(m_pixel_shader_solid, NULL, 0);
+		m_device_context2->DrawIndexed(36, 0, 0);
+	}
+
 	// Present the back buffer to the front buffer.
 	m_swap_chain2->Present(0, 0);
 }

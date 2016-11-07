@@ -84,6 +84,13 @@ private:
 	HRESULT InitScene();
 
 	/**
+	 Initializes the camera of this renderer.
+
+	 @return		A success/error value.
+	 */
+	HRESULT InitCamera();
+
+	/**
 	 Main window handle of this renderer.
 	 */
 	HWND m_hwindow;
@@ -104,6 +111,7 @@ private:
 
 	ID3D11VertexShader     *m_vertex_shader;
 	ID3D11PixelShader      *m_pixel_shader;
+	ID3D11PixelShader      *m_pixel_shader_solid;
 	ID3D11InputLayout      *m_vertex_layout;
 	ID3D11Buffer           *m_vertex_buffer;
 	ID3D11Buffer           *m_index_buffer;
