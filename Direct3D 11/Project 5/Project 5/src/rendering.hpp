@@ -99,6 +99,8 @@ private:
 	ID3D11DeviceContext2   *m_device_context2;
 	IDXGISwapChain2        *m_swap_chain2;
 	ID3D11RenderTargetView *m_render_target_view;
+	ID3D11Texture2D        *m_depth_stencil;
+	ID3D11DepthStencilView *m_depth_stencil_view;
 
 	ID3D11VertexShader     *m_vertex_shader;
 	ID3D11PixelShader      *m_pixel_shader;
@@ -107,7 +109,8 @@ private:
 	ID3D11Buffer           *m_index_buffer;
 	ID3D11Buffer           *m_constant_buffer;
 
-	ModelTransform			m_model_transform;
+	XMMATRIX                m_world_to_view;
+	XMMATRIX                m_view_to_projection;
 };
 
 #pragma endregion

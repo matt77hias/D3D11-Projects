@@ -40,7 +40,8 @@ extern "C" {
 #pragma region
 
 Renderer::Renderer(HWND hwindow) : m_loaded(false), m_hwindow(hwindow), m_render_target_view(NULL), m_swap_chain2 (NULL), m_device_context2(NULL), m_device2(NULL),
-		m_vertex_shader(NULL), m_pixel_shader(NULL), m_vertex_layout(NULL), m_vertex_buffer(NULL), m_index_buffer(NULL), m_constant_buffer(NULL) {
+		m_vertex_shader(NULL), m_pixel_shader(NULL), m_vertex_layout(NULL), m_vertex_buffer(NULL), m_index_buffer(NULL), m_constant_buffer(NULL),
+		m_depth_stencil(NULL), m_depth_stencil_view(NULL) {
 	const HRESULT result_init = InitDevice();
 	if (FAILED(result_init)) {
 		return;
@@ -74,6 +75,12 @@ Renderer::~Renderer() {
 	}
 	if (m_pixel_shader) {
 		m_pixel_shader->Release();
+	}
+	if (m_depth_stencil) {
+		m_depth_stencil->Release();
+	}
+	if (m_depth_stencil_view) {
+		m_depth_stencil_view->Release();
 	}
 	if (m_render_target_view) { 
 		m_render_target_view->Release(); 
@@ -217,12 +224,42 @@ HRESULT Renderer::InitDevice() {
 		return result_render_target_view;
 	}
 
+	// Create the depth stencil texture.
+	D3D11_TEXTURE2D_DESC depth_stencil_desc;
+	ZeroMemory(&depth_stencil_desc, sizeof(depth_stencil_desc));
+	depth_stencil_desc.Width				= width;						// Texture width (in texels).
+	depth_stencil_desc.Height				= height;						// Texture height (in texels).
+	depth_stencil_desc.MipLevels			= 1;							// The maximum number of mipmap levels in the texture.
+	depth_stencil_desc.ArraySize			= 1;							// Number of textures in the texture array.
+	depth_stencil_desc.Format				= DXGI_FORMAT_D24_UNORM_S8_UINT;// Texture format.
+	depth_stencil_desc.SampleDesc.Count		= 1;							// The number of multisamples per pixel.
+	depth_stencil_desc.SampleDesc.Quality	= 0;							// The image quality level. (lowest)
+	depth_stencil_desc.Usage				= D3D11_USAGE_DEFAULT;			// Value that identifies how the texture is to be read from and written to.
+	depth_stencil_desc.BindFlags			= D3D11_BIND_DEPTH_STENCIL;		// Flags for binding to pipeline stages. 
+	depth_stencil_desc.CPUAccessFlags		= 0;							// No CPU access is necessary.
+	depth_stencil_desc.MiscFlags			= 0;							// Flags that identify other, less common resource options.
+	const HRESULT result_depth_stencil = m_device2->CreateTexture2D(&depth_stencil_desc, NULL, &m_depth_stencil);
+	if (FAILED(result_depth_stencil)) {
+		return result_depth_stencil;
+	}
+
+	// Create the depth stencil view.
+	D3D11_DEPTH_STENCIL_VIEW_DESC depth_stencil_view_desc;
+	ZeroMemory(&depth_stencil_view_desc, sizeof(depth_stencil_view_desc));
+	depth_stencil_view_desc.Format			= depth_stencil_desc.Format;
+	depth_stencil_view_desc.ViewDimension	= D3D11_DSV_DIMENSION_TEXTURE2D;
+	depth_stencil_view_desc.Texture2D.MipSlice = 0;
+	const HRESULT result_depth_stencil_view = m_device2->CreateDepthStencilView(m_depth_stencil, &depth_stencil_view_desc, &m_depth_stencil_view);
+	if (FAILED(result_depth_stencil_view)) {
+		return result_depth_stencil_view;
+	}
+
 	// Bind one or more render targets atomically and 
 	// the depth-stencil buffer to the output-merger stage.
 	// 1. Number of render targets to bind.
 	// 2. Pointer to an array of ID3D11RenderTargetViews
-	// 3. The depth-stencil state is not bound.
-	m_device_context2->OMSetRenderTargets(1, &m_render_target_view, NULL);
+	// 3. The depth-stencil state.
+	m_device_context2->OMSetRenderTargets(1, &m_render_target_view, m_depth_stencil_view);
 
 	// Setup the (default) viewport
 	D3D11_VIEWPORT viewport;
@@ -409,20 +446,18 @@ HRESULT Renderer::InitScene() {
 			return result_constant_buffer;
 		}
 		
-		// Initialize the model to world matrix
-		m_model_transform.m_model_to_world = XMMatrixIdentity();
 		// Initialize the world to view matrix
 		XMVECTOR p_eye    = XMVectorSet(0.0f, 1.0f, -5.0f, 0.0f);
 		XMVECTOR p_focus  = XMVectorSet(0.0f, 1.0f,  0.0f, 0.0f);
 		XMVECTOR d_up     = XMVectorSet(0.0f, 1.0f,  0.0f, 0.0f);
-		m_model_transform.m_world_to_view = XMMatrixLookAtLH(p_eye, p_focus, d_up);
+		m_world_to_view = XMMatrixLookAtLH(p_eye, p_focus, d_up);
 		// Initialize the view to projection matrix
 		RECT client_rectangle;
 		GetClientRect(m_hwindow, &client_rectangle);
 		const UINT width  = client_rectangle.right  - client_rectangle.left;
 		const UINT height = client_rectangle.bottom - client_rectangle.top;
 		const float aspect_ratio = width / (float)height;
-		m_model_transform.m_view_to_projection = XMMatrixPerspectiveFovLH(XM_PIDIV2, aspect_ratio, 0.01f, 100.0f);
+		m_view_to_projection = XMMatrixPerspectiveFovLH(XM_PIDIV2, aspect_ratio, 0.01f, 100.0f);
 	}
 
 	return S_OK;
@@ -432,28 +467,39 @@ void Renderer::Render(double elapsed_time) {
 	// A solarized dark background color (some basic colors can be found in <directxcolors.h>)
 	const DirectX::XMVECTORF32 background_color = { 0.0f, 0.117647058f, 0.149019608f, 1.000000000f };
 
-	// Animate the cube.
-	m_model_transform.m_model_to_world = XMMatrixRotationY((float)elapsed_time);
+	// Animate the first cube.
+	const XMMATRIX model_to_world1	= XMMatrixRotationY((float)elapsed_time);
+	// Animate the second cube.
+	const XMMATRIX spin				= XMMatrixRotationZ((float)-elapsed_time);
+	const XMMATRIX orbit			= XMMatrixRotationY((float)-elapsed_time * 2.0f);
+	const XMMATRIX translate		= XMMatrixTranslation(-4.0f, 0.0f, 0.0f);
+	const XMMATRIX scale			= XMMatrixScaling(0.3f, 0.3f, 0.3f);
+	const XMMATRIX model_to_world2	= scale * spin * translate * orbit;
 
 	// Clear the back buffer.
 	m_device_context2->ClearRenderTargetView(m_render_target_view, background_color);
-
-	// Update the transforms.
-	ModelTransform buffer;
-	buffer.m_model_to_world     = XMMatrixTranspose(m_model_transform.m_model_to_world);
-	buffer.m_world_to_view      = XMMatrixTranspose(m_model_transform.m_world_to_view);
-	buffer.m_view_to_projection = XMMatrixTranspose(m_model_transform.m_view_to_projection);
-	m_device_context2->UpdateSubresource(m_constant_buffer, 0, NULL, &buffer, 0, 0);
+	// Clear the depth buffer to 1.0 (i.e. max depth).
+	m_device_context2->ClearDepthStencilView(m_depth_stencil_view, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
 	// Set a vertex and pixel shader to the device.
 	m_device_context2->VSSetShader(m_vertex_shader, NULL, 0);
 	m_device_context2->VSSetConstantBuffers(0, 1, &m_constant_buffer);
 	m_device_context2->PSSetShader(m_pixel_shader, NULL, 0);
 
-	// Draw non-indexed, non-instanced primitives.
-	// 1. Number of indices to draw.
-	// 2. Index of the first index.
-	// 3. A value added to each index before reading.
+	// Draw the first cube.
+	ModelTransform buffer;
+	buffer.m_model_to_world			= XMMatrixTranspose(model_to_world1);
+	buffer.m_world_to_view			= XMMatrixTranspose(m_world_to_view);
+	buffer.m_view_to_projection		= XMMatrixTranspose(m_view_to_projection);
+	m_device_context2->UpdateSubresource(m_constant_buffer, 0, NULL, &buffer, 0, 0);
+	m_device_context2->DrawIndexed(36, 0, 0);
+
+	// Draw the second cube.
+	ModelTransform buffer2;
+	buffer2.m_model_to_world		= XMMatrixTranspose(model_to_world2);
+	buffer2.m_world_to_view			= XMMatrixTranspose(m_world_to_view);
+	buffer2.m_view_to_projection	= XMMatrixTranspose(m_view_to_projection);
+	m_device_context2->UpdateSubresource(m_constant_buffer, 0, NULL, &buffer2, 0, 0);
 	m_device_context2->DrawIndexed(36, 0, 0);
 	
 	// Present the back buffer to the front buffer.
