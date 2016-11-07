@@ -7,6 +7,7 @@ Projects to start learning Direct3D
 * [Project 3](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%203): Rendering a triangle that is defined in projection space.
 * [Project 4](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%204): Rendering and animating a cube that is defined in object space.
 * [Project 5](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%205): Rendering and animating multiple cubes that are defined in object space.
+* [Project 6](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%206): Lighting.
 
 ## Development
 * **Platform**: (minimum) Windows 8.1 32 Bit and 64 Bit (Windows API + Direct3D 11.1)
