@@ -3,7 +3,7 @@ Projects to start learning Direct3D
 
 ## About
 * [Project 1](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%201): Creating a window for displaying.
-* [Project 2](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%202): Rendering the background color of window.
+* [Project 2](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%202): Rendering the background color of a window.
 * [Project 3](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%203): Rendering a triangle that is defined in projection space.
 * [Project 4](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%204): Rendering and animating a cube that is defined in object space.
 * [Project 5](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%205): Rendering and animating multiple cubes that are defined in object space.
