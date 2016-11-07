@@ -7,8 +7,6 @@
 
 #include <directxcolors.h>
 
-using namespace DirectX;
-
 #pragma endregion
 
 //-----------------------------------------------------------------------------
@@ -450,14 +448,14 @@ HRESULT Renderer::InitScene() {
 		XMVECTOR p_eye    = XMVectorSet(0.0f, 1.0f, -5.0f, 0.0f);
 		XMVECTOR p_focus  = XMVectorSet(0.0f, 1.0f,  0.0f, 0.0f);
 		XMVECTOR d_up     = XMVectorSet(0.0f, 1.0f,  0.0f, 0.0f);
-		m_world_to_view = XMMatrixLookAtLH(p_eye, p_focus, d_up);
+		camera.m_world_to_view = XMMatrixLookAtLH(p_eye, p_focus, d_up);
 		// Initialize the view to projection matrix
 		RECT client_rectangle;
 		GetClientRect(m_hwindow, &client_rectangle);
 		const UINT width  = client_rectangle.right  - client_rectangle.left;
 		const UINT height = client_rectangle.bottom - client_rectangle.top;
 		const float aspect_ratio = width / (float)height;
-		m_view_to_projection = XMMatrixPerspectiveFovLH(XM_PIDIV2, aspect_ratio, 0.01f, 100.0f);
+		camera.m_view_to_projection = XMMatrixPerspectiveFovLH(XM_PIDIV2, aspect_ratio, 0.01f, 100.0f);
 	}
 
 	return S_OK;
@@ -489,16 +487,16 @@ void Renderer::Render(double elapsed_time) {
 	// Draw the first cube.
 	ModelTransform buffer;
 	buffer.m_model_to_world			= XMMatrixTranspose(model_to_world1);
-	buffer.m_world_to_view			= XMMatrixTranspose(m_world_to_view);
-	buffer.m_view_to_projection		= XMMatrixTranspose(m_view_to_projection);
+	buffer.m_world_to_view			= XMMatrixTranspose(camera.m_world_to_view);
+	buffer.m_view_to_projection		= XMMatrixTranspose(camera.m_view_to_projection);
 	m_device_context2->UpdateSubresource(m_constant_buffer, 0, NULL, &buffer, 0, 0);
 	m_device_context2->DrawIndexed(36, 0, 0);
 
 	// Draw the second cube.
 	ModelTransform buffer2;
 	buffer2.m_model_to_world		= XMMatrixTranspose(model_to_world2);
-	buffer2.m_world_to_view			= XMMatrixTranspose(m_world_to_view);
-	buffer2.m_view_to_projection	= XMMatrixTranspose(m_view_to_projection);
+	buffer2.m_world_to_view			= XMMatrixTranspose(camera.m_world_to_view);
+	buffer2.m_view_to_projection	= XMMatrixTranspose(camera.m_view_to_projection);
 	m_device_context2->UpdateSubresource(m_constant_buffer, 0, NULL, &buffer2, 0, 0);
 	m_device_context2->DrawIndexed(36, 0, 0);
 	

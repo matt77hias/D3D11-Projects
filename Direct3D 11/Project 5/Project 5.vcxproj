@@ -185,6 +185,7 @@
     <ClCompile Include="Project 5\src\timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Project 5\src\camera.hpp" />
     <ClInclude Include="Project 5\src\engine.hpp" />
     <ClInclude Include="Project 5\src\geometry.hpp" />
     <ClInclude Include="Project 5\src\rendering.hpp" />

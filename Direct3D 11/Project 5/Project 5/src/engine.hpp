@@ -20,6 +20,7 @@ using std::cout;
 #include <windows.h>
 #include <d3d11_2.h>
 #include <directxmath.h>
+using namespace DirectX;
 
 #pragma endregion
 
@@ -32,6 +33,7 @@ using std::cout;
 #include "timer.hpp"
 #include "geometry.hpp"
 #include "transform.hpp"
+#include "camera.hpp"
 #include "rendering.hpp"
 
 #pragma endregion

@@ -109,8 +109,7 @@ private:
 	ID3D11Buffer           *m_index_buffer;
 	ID3D11Buffer           *m_constant_buffer;
 
-	XMMATRIX                m_world_to_view;
-	XMMATRIX                m_view_to_projection;
+	Camera camera;
 };
 
 #pragma endregion
