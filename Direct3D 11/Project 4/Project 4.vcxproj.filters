@@ -13,7 +13,7 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Shaders">
+    <Filter Include="Shader Files">
       <UniqueIdentifier>{22db41e6-c196-4fdd-8bdf-b23134d3e829}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -62,13 +62,13 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Project 4\shaders\effect.fx">
-      <Filter>Shaders</Filter>
+      <Filter>Shader Files</Filter>
     </FxCompile>
     <FxCompile Include="Project 4\shaders\effect_PS.hlsl">
-      <Filter>Shaders</Filter>
+      <Filter>Shader Files</Filter>
     </FxCompile>
     <FxCompile Include="Project 4\shaders\effect_VS.hlsl">
-      <Filter>Shaders</Filter>
+      <Filter>Shader Files</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
