@@ -135,7 +135,7 @@ HRESULT Renderer::InitDevice() {
 			D3D11_SDK_VERSION,			// The SDK version.
 			&device,					// The address of a pointer to the ID3D11Device that represents the device created.
 			&m_feature_level,			// The address of a pointer to the supported feature level.
-			&device_context			// The address of a pointer to the ID3D11DeviceContext.
+			&device_context				// The address of a pointer to the ID3D11DeviceContext.
 		);
 		if (SUCCEEDED(result_device)) {
 			break;
@@ -293,7 +293,7 @@ HRESULT Renderer::InitDevice() {
 	// Compile the vertex shader.
 	ID3DBlob *vertex_shader_blob = NULL;
 #ifdef ENGINE_COMPILE_SHADERS
-	const HRESULT result_vertex_shader_blob = CompileShaderFromFile(L"Project 3/shaders/effect.fx", "VS", "vs_4_0", &vertex_shader_blob);
+	const HRESULT result_vertex_shader_blob = CompileShaderFromFile(L"Project 6/shaders/effect.fx", "VS", "vs_4_0", &vertex_shader_blob);
 #else
 	const HRESULT result_vertex_shader_blob = D3DReadFileToBlob(L"effect_VS.cso", &vertex_shader_blob);
 #endif
@@ -329,7 +329,7 @@ HRESULT Renderer::InitDevice() {
 	// Compile the pixel shader.
 	ID3DBlob *pixel_shader_blob = NULL;
 #ifdef ENGINE_COMPILE_SHADERS
-	const HRESULT result_pixel_shader_blob = CompileShaderFromFile(L"Project 3/shaders/effect.fx", "PS", "ps_4_0", &pixel_shader_blob);
+	const HRESULT result_pixel_shader_blob = CompileShaderFromFile(L"Project 6/shaders/effect.fx", "PS", "ps_4_0", &pixel_shader_blob);
 #else
 	const HRESULT result_pixel_shader_blob = D3DReadFileToBlob(L"effect_PS.cso", &pixel_shader_blob);
 #endif
@@ -351,7 +351,7 @@ HRESULT Renderer::InitDevice() {
 	// Compile the pixel shader.
 	ID3DBlob *pixel_shader_solid_blob = NULL;
 #ifdef ENGINE_COMPILE_SHADERS
-	const HRESULT result_pixel_shader_solid_blob = CompileShaderFromFile(L"Project 3/shaders/effect.fx", "PSSolid", "ps_4_0", &pixel_shader_solid_blob);
+	const HRESULT result_pixel_shader_solid_blob = CompileShaderFromFile(L"Project 6/shaders/effect.fx", "PSSolid", "ps_4_0", &pixel_shader_solid_blob);
 #else
 	const HRESULT result_pixel_shader_solid_blob = D3DReadFileToBlob(L"effect_PSSolid.cso", &pixel_shader_solid_blob);
 #endif
