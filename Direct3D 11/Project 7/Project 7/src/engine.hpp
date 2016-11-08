@@ -29,6 +29,8 @@ using namespace DirectX;
 //-----------------------------------------------------------------------------
 #pragma region
 
+#include "dds_loader.hpp"
+
 #include "version.hpp"
 #include "timer.hpp"
 #include "geometry.hpp"

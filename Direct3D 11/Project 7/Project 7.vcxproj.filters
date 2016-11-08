@@ -30,6 +30,9 @@
     <ClCompile Include="Project 7\src\timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Project 7\src\dds_loader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Project 7\src\stdafx.h">
@@ -59,6 +62,9 @@
     <ClInclude Include="Project 7\src\camera.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Project 7\src\dds_loader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Project 7\shaders\effect.fx">
@@ -68,9 +74,6 @@
       <Filter>Shader Files</Filter>
     </FxCompile>
     <FxCompile Include="Project 7\shaders\effect_VS.hlsl">
-      <Filter>Shader Files</Filter>
-    </FxCompile>
-    <FxCompile Include="Project 7\shaders\effect_PSSolid.hlsl">
       <Filter>Shader Files</Filter>
     </FxCompile>
   </ItemGroup>

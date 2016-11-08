@@ -1,13 +1,20 @@
 //--------------------------------------------------------------------------------------
-// ModelTransform Variables
+// Constant buffers
 //--------------------------------------------------------------------------------------
-cbuffer ModelTransform : register(b0) {
-	matrix model_to_world;
+Texture2D diffuse_texture : register(t0);
+SamplerState linear_sample : register(s0);
+
+cbuffer cb_never_changes : register(b0) {
 	matrix world_to_view;
+};
+
+cbuffer cb_change_on_resize : register(b1) {
 	matrix view_to_projection;
-	float4 d_lights[2];
-	float4 color_lights[2];
-	float4 output_color;
+};
+
+cbuffer cb_changes_every_frame : register(b2) {
+	matrix model_to_world;
+	float4 mesh_color;
 }
 
 //-----------------------------------------------------------------------------
@@ -15,12 +22,12 @@ cbuffer ModelTransform : register(b0) {
 //-----------------------------------------------------------------------------
 struct VS_INPUT {
 	float4 p : POSITION;
-	float3 n : NORMAL;
+	float2 tex : TEXCOORD0;
 };
 
 struct PS_INPUT {
 	float4 p : SV_POSITION;
-	float3 n : TEXCOORD0;
+	float2 tex : TEXCOORD0;
 };
 
 //-----------------------------------------------------------------------------
@@ -31,27 +38,13 @@ PS_INPUT VS(VS_INPUT input) {
 	output.p = mul(input.p, model_to_world);
 	output.p = mul(output.p, world_to_view);
 	output.p = mul(output.p, view_to_projection);
-	output.n = mul(float4(input.n, 1), model_to_world).xyz;
+	output.tex = input.tex;
 	return output;
 }
 
 //-----------------------------------------------------------------------------
-// Pixel Shader - With lighting
+// Pixel Shader
 //-----------------------------------------------------------------------------
 float4 PS(PS_INPUT input) : SV_Target {
-	float4 final_color = 0;
-
-	//do NdotL lighting for 2 lights
-	for (int i = 0; i < 2; ++i) {
-		final_color += saturate(dot((float3)d_lights[i], input.n) * color_lights[i]);
-	}
-	final_color.a = 1;
-	return final_color;
-}
-
-//--------------------------------------------------------------------------------------
-// Pixel Shader - With ambient lighting
-//--------------------------------------------------------------------------------------
-float4 PSSolid(PS_INPUT input) : SV_Target {
-	return output_color;
+	return diffuse_texture.Sample(linear_sample, input.tex) * mesh_color;
 }

@@ -111,24 +111,31 @@ private:
 	 */
 	bool m_loaded;
 
-	D3D_DRIVER_TYPE         m_driver_type;
-	D3D_FEATURE_LEVEL		m_feature_level;
-	ID3D11Device2          *m_device2;
-	ID3D11DeviceContext2   *m_device_context2;
-	IDXGISwapChain2        *m_swap_chain2;
-	ID3D11RenderTargetView *m_render_target_view;
-	ID3D11Texture2D        *m_depth_stencil;
-	ID3D11DepthStencilView *m_depth_stencil_view;
+	D3D_DRIVER_TYPE           m_driver_type;
+	D3D_FEATURE_LEVEL		  m_feature_level;
+	ID3D11Device2            *m_device2;
+	ID3D11DeviceContext2     *m_device_context2;
+	IDXGISwapChain2          *m_swap_chain2;
+	ID3D11RenderTargetView   *m_render_target_view;
+	ID3D11Texture2D          *m_depth_stencil;
+	ID3D11DepthStencilView   *m_depth_stencil_view;
 
-	ID3D11VertexShader     *m_vertex_shader;
-	ID3D11PixelShader      *m_pixel_shader;
-	ID3D11PixelShader      *m_pixel_shader_solid;
-	ID3D11InputLayout      *m_vertex_layout;
-	ID3D11Buffer           *m_vertex_buffer;
-	ID3D11Buffer           *m_index_buffer;
-	ID3D11Buffer           *m_constant_buffer;
+	ID3D11VertexShader       *m_vertex_shader;
+	ID3D11PixelShader        *m_pixel_shader;
+	ID3D11InputLayout        *m_vertex_layout;
+	ID3D11Buffer             *m_vertex_buffer;
+	ID3D11Buffer             *m_index_buffer;
+
+	ID3D11Buffer             *m_cb_never_changes;
+	ID3D11Buffer             *m_cb_change_on_resize;
+	ID3D11Buffer             *m_cb_changes_every_frame;
+
+	ID3D11ShaderResourceView *m_texture_resource_view;
+	ID3D11SamplerState       *m_sampler_linear;
 
 	Camera camera;
+
+	XMFLOAT4 m_mesh_color;
 };
 
 #pragma endregion
