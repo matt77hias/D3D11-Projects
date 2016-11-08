@@ -280,7 +280,11 @@ HRESULT Renderer::InitDevice() {
 
 	// Compile the vertex shader.
 	ID3DBlob *vertex_shader_blob = NULL;
-	const HRESULT result_vertex_shader_blob = CompileShaderFromFile(L"Project 5/shaders/effect.fx", "VS", "vs_4_0", &vertex_shader_blob);
+#ifdef ENGINE_COMPILE_SHADERS
+	const HRESULT result_vertex_shader_blob = CompileShaderFromFile(L"Project 3/shaders/effect.fx", "VS", "vs_4_0", &vertex_shader_blob);
+#else
+	const HRESULT result_vertex_shader_blob = D3DReadFileToBlob(L"effect_VS.cso", &vertex_shader_blob);
+#endif
 	if (FAILED(result_vertex_shader_blob)) {
 		return result_vertex_shader_blob;
 	}
@@ -312,7 +316,11 @@ HRESULT Renderer::InitDevice() {
 
 	// Compile the pixel shader.
 	ID3DBlob *pixel_shader_blob = NULL;
-	const HRESULT result_pixel_shader_blob = CompileShaderFromFile(L"Project 5/shaders/effect.fx", "PS", "ps_4_0", &pixel_shader_blob);
+#ifdef ENGINE_COMPILE_SHADERS
+	const HRESULT result_pixel_shader_blob = CompileShaderFromFile(L"Project 3/shaders/effect.fx", "PS", "ps_4_0", &pixel_shader_blob);
+#else
+	const HRESULT result_pixel_shader_blob = D3DReadFileToBlob(L"effect_PS.cso", &pixel_shader_blob);
+#endif
 	if (FAILED(result_pixel_shader_blob)) {
 		return result_pixel_shader_blob;
 	}

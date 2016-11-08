@@ -70,5 +70,8 @@
     <FxCompile Include="Project 6\shaders\effect_VS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Project 6\shaders\effect_PSSolid.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
