@@ -42,7 +42,7 @@ HRESULT CreateDDSTextureFromMemory(_In_ ID3D11Device *d3dDevice,
 	_Outptr_opt_ ID3D11Resource **texture,
 	_Outptr_opt_ ID3D11ShaderResourceView **textureView,
 	_In_ size_t maxsize = 0,
-	_Out_opt_ DDS_ALPHA_MODE *alphaMode = NULL
+	_Out_opt_ DDS_ALPHA_MODE *alphaMode = nullptr
 );
 
 HRESULT CreateDDSTextureFromFile(_In_ ID3D11Device *d3dDevice,
@@ -50,7 +50,7 @@ HRESULT CreateDDSTextureFromFile(_In_ ID3D11Device *d3dDevice,
 	_Outptr_opt_ ID3D11Resource **texture,
 	_Outptr_opt_ ID3D11ShaderResourceView **textureView,
 	_In_ size_t maxsize = 0,
-	_Out_opt_ DDS_ALPHA_MODE *alphaMode = NULL
+	_Out_opt_ DDS_ALPHA_MODE *alphaMode = nullptr
 );
 
 // Standard version with optional auto-gen mipmap support
@@ -61,7 +61,7 @@ HRESULT CreateDDSTextureFromMemory(_In_ ID3D11Device *d3dDevice,
 	_Outptr_opt_ ID3D11Resource **texture,
 	_Outptr_opt_ ID3D11ShaderResourceView **textureView,
 	_In_ size_t maxsize = 0,
-	_Out_opt_ DDS_ALPHA_MODE *alphaMode = NULL
+	_Out_opt_ DDS_ALPHA_MODE *alphaMode = nullptr
 );
 
 HRESULT CreateDDSTextureFromFile(_In_ ID3D11Device *d3dDevice,
@@ -70,7 +70,7 @@ HRESULT CreateDDSTextureFromFile(_In_ ID3D11Device *d3dDevice,
 	_Outptr_opt_ ID3D11Resource **texture,
 	_Outptr_opt_ ID3D11ShaderResourceView **textureView,
 	_In_ size_t maxsize = 0,
-	_Out_opt_ DDS_ALPHA_MODE *alphaMode = NULL
+	_Out_opt_ DDS_ALPHA_MODE *alphaMode = nullptr
 );
 
 // Extended version
@@ -85,7 +85,7 @@ HRESULT CreateDDSTextureFromMemoryEx(_In_ ID3D11Device *d3dDevice,
 	_In_ bool forceSRGB,
 	_Outptr_opt_ ID3D11Resource **texture,
 	_Outptr_opt_ ID3D11ShaderResourceView **textureView,
-	_Out_opt_ DDS_ALPHA_MODE* alphaMode = NULL
+	_Out_opt_ DDS_ALPHA_MODE* alphaMode = nullptr
 );
 
 HRESULT CreateDDSTextureFromFileEx(_In_ ID3D11Device *d3dDevice,
@@ -98,7 +98,7 @@ HRESULT CreateDDSTextureFromFileEx(_In_ ID3D11Device *d3dDevice,
 	_In_ bool forceSRGB,
 	_Outptr_opt_ ID3D11Resource **texture,
 	_Outptr_opt_ ID3D11ShaderResourceView **textureView,
-	_Out_opt_ DDS_ALPHA_MODE *alphaMode = NULL
+	_Out_opt_ DDS_ALPHA_MODE *alphaMode = nullptr
 );
 
 // Extended version with optional auto-gen mipmap support
@@ -114,7 +114,7 @@ HRESULT CreateDDSTextureFromMemoryEx(_In_ ID3D11Device *d3dDevice,
 	_In_ bool forceSRGB,
 	_Outptr_opt_ ID3D11Resource **texture,
 	_Outptr_opt_ ID3D11ShaderResourceView **textureView,
-	_Out_opt_ DDS_ALPHA_MODE* alphaMode = NULL
+	_Out_opt_ DDS_ALPHA_MODE* alphaMode = nullptr
 );
 
 HRESULT CreateDDSTextureFromFileEx(_In_ ID3D11Device *d3dDevice,
@@ -128,5 +128,5 @@ HRESULT CreateDDSTextureFromFileEx(_In_ ID3D11Device *d3dDevice,
 	_In_ bool forceSRGB,
 	_Outptr_opt_ ID3D11Resource **texture,
 	_Outptr_opt_ ID3D11ShaderResourceView **textureView,
-	_Out_opt_ DDS_ALPHA_MODE *alphaMode = NULL
+	_Out_opt_ DDS_ALPHA_MODE *alphaMode = nullptr
 );

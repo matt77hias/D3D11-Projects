@@ -65,7 +65,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 //-----------------------------------------------------------------------------
 #pragma region
 
-Engine::Engine(HINSTANCE hinstance) : m_loaded(false), m_hinstance(hinstance), m_renderer(NULL) {
+Engine::Engine(HINSTANCE hinstance) : m_loaded(false), m_hinstance(hinstance), m_renderer(nullptr) {
 
 	//Initialize a window.
 	const HRESULT result_window = InitializeWindow();
@@ -117,21 +117,21 @@ HRESULT Engine::InitializeWindow() {
 	//A handle to the instance that contains the window procedure for the class.
 	wcex.hInstance = m_hinstance;
 	// A handle to the class icon. This member must be a handle to an icon resource.
-	wcex.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+	wcex.hIcon = LoadIcon(nullptr, IDI_APPLICATION);
 	// A handle to the class cursor. This member must be a handle to a cursor resource.
-	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	// A handle to the class background brush. This member can be a handle to
 	// the brush to be used for painting the background, or it can be a color value.
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	// Pointer to a null-terminated character string that specifies the resource name 
 	// of the class menu, as the name appears in the resource file. 
-	// If this member is NULL, windows belonging to this class have no default menu.
-	wcex.lpszMenuName = NULL;
+	// If this member is nullptr, windows belonging to this class have no default menu.
+	wcex.lpszMenuName = nullptr;
 	// A pointer to a null-terminated string or is an atom.
 	// If lpszClassName is a string, it specifies the window class name.
 	wcex.lpszClassName = L"WindowClass";
 	// A handle to a small icon that is associated with the window class.
-	wcex.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
+	wcex.hIconSm = LoadIcon(nullptr, IDI_APPLICATION);
 	// Register a window class
 	if (!RegisterClassEx(&wcex)) {
 		return E_FAIL;
@@ -154,7 +154,7 @@ HRESULT Engine::InitializeWindow() {
 	// WS_SYSMENU: The window has a window menu on its title bar.
 	// WS_MINIMIZEBOX: The window has a minimize button.
 	m_hwindow = CreateWindow(L"WindowClass", L"Engine Test", WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX,
-		CW_USEDEFAULT, CW_USEDEFAULT, rectangle.right - rectangle.left, rectangle.bottom - rectangle.top, NULL, NULL, m_hinstance, NULL);
+		CW_USEDEFAULT, CW_USEDEFAULT, rectangle.right - rectangle.left, rectangle.bottom - rectangle.top, nullptr, nullptr, m_hinstance, nullptr);
 
 	if (!m_hwindow) {
 		return E_FAIL;
@@ -196,7 +196,7 @@ void Engine::Run(int nCmdShow) {
 		// Retrieves messages for any window that belongs to the current thread
 		// without performing range filtering. Furthermore messages are removed
 		// after processing.
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
 			// Translates virtual-key messages into character messages.
 			TranslateMessage(&msg);
 			// Dispatches a message to a window procedure.
@@ -222,7 +222,7 @@ void Engine::Run(int nCmdShow) {
 				A handle to the current instance of the application.
  @param[in]		hPrevInstance
 				A handle to the previous instance of the application.
-				This parameter is always @c NULL.
+				This parameter is always @c nullptr.
  @param[in]		lpCmdLine
 				The command line for the application, excluding the program name.
  @param[in]		nCmdShow

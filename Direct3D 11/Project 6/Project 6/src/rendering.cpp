@@ -46,9 +46,9 @@ struct ConstantBuffer {
 	XMFLOAT4 output_color;
 };
 
-Renderer::Renderer(HWND hwindow) : m_loaded(false), m_hwindow(hwindow), m_render_target_view(NULL), m_swap_chain2 (NULL), m_device_context2(NULL), m_device2(NULL),
-		m_vertex_shader(NULL), m_pixel_shader(NULL), m_pixel_shader_solid(NULL), m_vertex_layout(NULL), m_vertex_buffer(NULL), m_index_buffer(NULL), m_constant_buffer(NULL),
-		m_depth_stencil(NULL), m_depth_stencil_view(NULL) {
+Renderer::Renderer(HWND hwindow) : m_loaded(false), m_hwindow(hwindow), m_render_target_view(nullptr), m_swap_chain2 (nullptr), m_device_context2(nullptr), m_device2(nullptr),
+		m_vertex_shader(nullptr), m_pixel_shader(nullptr), m_pixel_shader_solid(nullptr), m_vertex_layout(nullptr), m_vertex_buffer(nullptr), m_index_buffer(nullptr), m_constant_buffer(nullptr),
+		m_depth_stencil(nullptr), m_depth_stencil_view(nullptr) {
 	
 	const HRESULT result_device = InitDevice();
 	if (FAILED(result_device)) {
@@ -120,15 +120,15 @@ HRESULT Renderer::InitDevice() {
 #endif
 
 	// Get the ID3D11Device and ID3D11DeviceContext.
-	ID3D11Device *device = NULL;
-	ID3D11DeviceContext *device_context = NULL;
+	ID3D11Device *device = nullptr;
+	ID3D11DeviceContext *device_context = nullptr;
 	HRESULT result_device = S_OK;
 	for (UINT i = 0; i < _countof(g_driver_types); ++i) {
 		m_driver_type = g_driver_types[i];
 		result_device = D3D11CreateDevice(
-			NULL,						// Default adapter
+			nullptr,						// Default adapter
 			m_driver_type,				// Driver type
-			NULL,						// A handle to a DLL that implements a software rasterizer.
+			nullptr,						// A handle to a DLL that implements a software rasterizer.
 			create_device_flags,		// The runtime layers to enable.
 			g_feature_levels,			// The order of feature levels to attempt to create.
 			_countof(g_feature_levels),	// The number of feature levels.
@@ -161,13 +161,13 @@ HRESULT Renderer::InitDevice() {
 	}
 
 	// Get the IDXGIDevice3.
-	IDXGIDevice3 *dxgi_device3 = NULL;
+	IDXGIDevice3 *dxgi_device3 = nullptr;
 	const HRESULT result_dxgi_device3 = m_device2->QueryInterface(__uuidof(IDXGIDevice3), (void **)&dxgi_device3);
 	if (FAILED(result_dxgi_device3)) {
 		return result_dxgi_device3;
 	}
 	// Get the IDXGIAdapter.
-	IDXGIAdapter *dxgi_adapter = NULL;
+	IDXGIAdapter *dxgi_adapter = nullptr;
 	const HRESULT result_dxgi_adapter = dxgi_device3->GetAdapter(&dxgi_adapter);
 	if (FAILED(result_dxgi_adapter)) {
 		dxgi_device3->Release();
@@ -175,7 +175,7 @@ HRESULT Renderer::InitDevice() {
 		return result_dxgi_adapter;
 	}
 	// Get the IDXGIFactory3.
-	IDXGIFactory3* dxgi_factory3 = NULL;
+	IDXGIFactory3* dxgi_factory3 = nullptr;
 	const HRESULT result_dxgi_factory3 = dxgi_adapter->GetParent(__uuidof(IDXGIFactory3), (void **)&dxgi_factory3);
 	if (FAILED(result_dxgi_factory3)) {
 		dxgi_adapter->Release();
@@ -206,7 +206,7 @@ HRESULT Renderer::InitDevice() {
 
 	// Get the IDXGISwapChain1.
 	IDXGISwapChain1 *swap_chain1;
-	const HRESULT result_swap_chain1 = dxgi_factory3->CreateSwapChainForHwnd(m_device2, m_hwindow, &swap_chain_desc, NULL, NULL, &swap_chain1);
+	const HRESULT result_swap_chain1 = dxgi_factory3->CreateSwapChainForHwnd(m_device2, m_hwindow, &swap_chain_desc, nullptr, nullptr, &swap_chain1);
 	if (FAILED(result_swap_chain1)) {
 		return result_swap_chain1;
 	}
@@ -226,13 +226,13 @@ HRESULT Renderer::InitDevice() {
 	dxgi_factory3->Release();
 
 	// Access the only back buffer of the swap-chain's.
-	ID3D11Texture2D *back_buffer = NULL;
+	ID3D11Texture2D *back_buffer = nullptr;
 	const HRESULT result_back_buffer = m_swap_chain2->GetBuffer(0, __uuidof(ID3D11Texture2D), (void **)&back_buffer);
 	if (FAILED(result_back_buffer)) {
 		return result_back_buffer;
 	}
 	// Create a ID3D11RenderTargetView.
-	const HRESULT result_render_target_view = m_device2->CreateRenderTargetView(back_buffer, NULL, &m_render_target_view);
+	const HRESULT result_render_target_view = m_device2->CreateRenderTargetView(back_buffer, nullptr, &m_render_target_view);
 	// Release the back buffer.
 	back_buffer->Release();
 	if (FAILED(result_render_target_view)) {
@@ -253,7 +253,7 @@ HRESULT Renderer::InitDevice() {
 	depth_stencil_desc.BindFlags			= D3D11_BIND_DEPTH_STENCIL;		// Flags for binding to pipeline stages. 
 	depth_stencil_desc.CPUAccessFlags		= 0;							// No CPU access is necessary.
 	depth_stencil_desc.MiscFlags			= 0;							// Flags that identify other, less common resource options.
-	const HRESULT result_depth_stencil = m_device2->CreateTexture2D(&depth_stencil_desc, NULL, &m_depth_stencil);
+	const HRESULT result_depth_stencil = m_device2->CreateTexture2D(&depth_stencil_desc, nullptr, &m_depth_stencil);
 	if (FAILED(result_depth_stencil)) {
 		return result_depth_stencil;
 	}
@@ -291,7 +291,7 @@ HRESULT Renderer::InitDevice() {
 	m_device_context2->RSSetViewports(1, &viewport);
 
 	// Compile the vertex shader.
-	ID3DBlob *vertex_shader_blob = NULL;
+	ID3DBlob *vertex_shader_blob = nullptr;
 #ifdef ENGINE_COMPILE_SHADERS
 	const HRESULT result_vertex_shader_blob = CompileShaderFromFile(L"Project 6/shaders/effect.fx", "VS", "vs_4_0", &vertex_shader_blob);
 #else
@@ -305,7 +305,7 @@ HRESULT Renderer::InitDevice() {
 	// 2. The size of the compiled vertex shader.
 	// 3. A pointer to a class linkage interface.
 	// 4. Address of a pointer to a vertex shader.
-	const HRESULT result_vertex_shader = m_device2->CreateVertexShader(vertex_shader_blob->GetBufferPointer(), vertex_shader_blob->GetBufferSize(), NULL, &m_vertex_shader);
+	const HRESULT result_vertex_shader = m_device2->CreateVertexShader(vertex_shader_blob->GetBufferPointer(), vertex_shader_blob->GetBufferSize(), nullptr, &m_vertex_shader);
 	if (FAILED(result_vertex_shader)) {
 		vertex_shader_blob->Release();
 		return result_vertex_shader;
@@ -327,7 +327,7 @@ HRESULT Renderer::InitDevice() {
 	m_device_context2->IASetInputLayout(m_vertex_layout);
 
 	// Compile the pixel shader.
-	ID3DBlob *pixel_shader_blob = NULL;
+	ID3DBlob *pixel_shader_blob = nullptr;
 #ifdef ENGINE_COMPILE_SHADERS
 	const HRESULT result_pixel_shader_blob = CompileShaderFromFile(L"Project 6/shaders/effect.fx", "PS", "ps_4_0", &pixel_shader_blob);
 #else
@@ -341,7 +341,7 @@ HRESULT Renderer::InitDevice() {
 	// 2. The size of the compiled pixel shader.
 	// 3. A pointer to a class linkage interface.
 	// 4. Address of a pointer to a pixel shader.
-	const HRESULT result_pixel_shader = m_device2->CreatePixelShader(pixel_shader_blob->GetBufferPointer(), pixel_shader_blob->GetBufferSize(), NULL, &m_pixel_shader);
+	const HRESULT result_pixel_shader = m_device2->CreatePixelShader(pixel_shader_blob->GetBufferPointer(), pixel_shader_blob->GetBufferSize(), nullptr, &m_pixel_shader);
 	// Release the ID3DBlob.
 	pixel_shader_blob->Release();
 	if (FAILED(result_pixel_shader)) {
@@ -349,7 +349,7 @@ HRESULT Renderer::InitDevice() {
 	}
 
 	// Compile the pixel shader.
-	ID3DBlob *pixel_shader_solid_blob = NULL;
+	ID3DBlob *pixel_shader_solid_blob = nullptr;
 #ifdef ENGINE_COMPILE_SHADERS
 	const HRESULT result_pixel_shader_solid_blob = CompileShaderFromFile(L"Project 6/shaders/effect.fx", "PSSolid", "ps_4_0", &pixel_shader_solid_blob);
 #else
@@ -363,7 +363,7 @@ HRESULT Renderer::InitDevice() {
 	// 2. The size of the compiled pixel shader.
 	// 3. A pointer to a class linkage interface.
 	// 4. Address of a pointer to a pixel shader.
-	const HRESULT result_pixel_shader_solid = m_device2->CreatePixelShader(pixel_shader_solid_blob->GetBufferPointer(), pixel_shader_solid_blob->GetBufferSize(), NULL, &m_pixel_shader_solid);
+	const HRESULT result_pixel_shader_solid = m_device2->CreatePixelShader(pixel_shader_solid_blob->GetBufferPointer(), pixel_shader_solid_blob->GetBufferSize(), nullptr, &m_pixel_shader_solid);
 	// Release the ID3DBlob.
 	pixel_shader_solid_blob->Release();
 	if (FAILED(result_pixel_shader_solid)) {
@@ -502,7 +502,7 @@ HRESULT Renderer::InitScene() {
 		// 1. A pointer to a D3D11_BUFFER_DESC structure that describes the buffer.
 		// 2. A pointer to a D3D11_SUBRESOURCE_DATA structure that describes the initialization data.
 		// 3. Address of a pointer to the ID3D11Buffer interface for the buffer object created.
-		const HRESULT result_constant_buffer = m_device2->CreateBuffer(&buffer_desc, NULL, &m_constant_buffer);
+		const HRESULT result_constant_buffer = m_device2->CreateBuffer(&buffer_desc, nullptr, &m_constant_buffer);
 		if (FAILED(result_constant_buffer)) {
 			return result_constant_buffer;
 		}
@@ -555,9 +555,9 @@ void Renderer::Render(double elapsed_time) {
 	m_device_context2->ClearDepthStencilView(m_depth_stencil_view, D3D11_CLEAR_DEPTH, 1.0f, 0);
 
 	// Set a vertex and pixel shader to the device.
-	m_device_context2->VSSetShader(m_vertex_shader, NULL, 0);
+	m_device_context2->VSSetShader(m_vertex_shader, nullptr, 0);
 	m_device_context2->VSSetConstantBuffers(0, 1, &m_constant_buffer);
-	m_device_context2->PSSetShader(m_pixel_shader, NULL, 0);
+	m_device_context2->PSSetShader(m_pixel_shader, nullptr, 0);
 	m_device_context2->PSSetConstantBuffers(0, 1, &m_constant_buffer);
 
 	// Draw the cube.
@@ -570,7 +570,7 @@ void Renderer::Render(double elapsed_time) {
 	buffer.color_lights[0]			= color_lights[0];
 	buffer.color_lights[1]			= color_lights[1];
 	buffer.output_color				= XMFLOAT4(0, 0, 0, 0);
-	m_device_context2->UpdateSubresource(m_constant_buffer, 0, NULL, &buffer, 0, 0);
+	m_device_context2->UpdateSubresource(m_constant_buffer, 0, nullptr, &buffer, 0, 0);
 	m_device_context2->DrawIndexed(36, 0, 0);
 
 	// Draw each light.
@@ -580,8 +580,8 @@ void Renderer::Render(double elapsed_time) {
 
 		buffer.m_model_to_world = XMMatrixTranspose(model_to_world_i);
 		buffer.output_color     = color_lights[i];
-		m_device_context2->UpdateSubresource(m_constant_buffer, 0, NULL, &buffer, 0, 0);
-		m_device_context2->PSSetShader(m_pixel_shader_solid, NULL, 0);
+		m_device_context2->UpdateSubresource(m_constant_buffer, 0, nullptr, &buffer, 0, 0);
+		m_device_context2->PSSetShader(m_pixel_shader_solid, nullptr, 0);
 		m_device_context2->DrawIndexed(36, 0, 0);
 	}
 

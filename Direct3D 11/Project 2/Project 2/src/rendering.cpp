@@ -37,7 +37,7 @@ extern "C" {
 //-----------------------------------------------------------------------------
 #pragma region
 
-Renderer::Renderer(HWND hwindow) : m_loaded(false), m_hwindow(hwindow), m_render_target_view(NULL), m_swap_chain2 (NULL), m_device_context2(NULL), m_device2(NULL) {
+Renderer::Renderer(HWND hwindow) : m_loaded(false), m_hwindow(hwindow), m_render_target_view(nullptr), m_swap_chain2 (nullptr), m_device_context2(nullptr), m_device2(nullptr) {
 	const HRESULT result_init = InitDevice();
 	if (FAILED(result_init)) {
 		return;
@@ -77,15 +77,15 @@ HRESULT Renderer::InitDevice() {
 #endif
 
 	// Get the ID3D11Device and ID3D11DeviceContext.
-	ID3D11Device *device = NULL;
-	ID3D11DeviceContext *device_context = NULL;
+	ID3D11Device *device = nullptr;
+	ID3D11DeviceContext *device_context = nullptr;
 	HRESULT result_device = S_OK;
 	for (UINT i = 0; i < _countof(g_driver_types); ++i) {
 		m_driver_type = g_driver_types[i];
 		result_device = D3D11CreateDevice(
-			NULL,						// Default adapter
+			nullptr,						// Default adapter
 			m_driver_type,				// Driver type
-			NULL,						// A handle to a DLL that implements a software rasterizer.
+			nullptr,						// A handle to a DLL that implements a software rasterizer.
 			create_device_flags,		// The runtime layers to enable.
 			g_feature_levels,			// The order of feature levels to attempt to create.
 			_countof(g_feature_levels),	// The number of feature levels.
@@ -118,13 +118,13 @@ HRESULT Renderer::InitDevice() {
 	}
 
 	// Get the IDXGIDevice3.
-	IDXGIDevice3 *dxgi_device3 = NULL;
+	IDXGIDevice3 *dxgi_device3 = nullptr;
 	const HRESULT result_dxgi_device3 = m_device2->QueryInterface(__uuidof(IDXGIDevice3), (void **)&dxgi_device3);
 	if (FAILED(result_dxgi_device3)) {
 		return result_dxgi_device3;
 	}
 	// Get the IDXGIAdapter.
-	IDXGIAdapter *dxgi_adapter = NULL;
+	IDXGIAdapter *dxgi_adapter = nullptr;
 	const HRESULT result_dxgi_adapter = dxgi_device3->GetAdapter(&dxgi_adapter);
 	if (FAILED(result_dxgi_adapter)) {
 		dxgi_device3->Release();
@@ -132,7 +132,7 @@ HRESULT Renderer::InitDevice() {
 		return result_dxgi_adapter;
 	}
 	// Get the IDXGIFactory3.
-	IDXGIFactory3* dxgi_factory3 = NULL;
+	IDXGIFactory3* dxgi_factory3 = nullptr;
 	const HRESULT result_dxgi_factory3 = dxgi_adapter->GetParent(__uuidof(IDXGIFactory3), (void **)&dxgi_factory3);
 	if (FAILED(result_dxgi_factory3)) {
 		dxgi_adapter->Release();
@@ -163,7 +163,7 @@ HRESULT Renderer::InitDevice() {
 
 	// Get the IDXGISwapChain1.
 	IDXGISwapChain1 *swap_chain1;
-	const HRESULT result_swap_chain1 = dxgi_factory3->CreateSwapChainForHwnd(m_device2, m_hwindow, &swap_chain_desc, NULL, NULL, &swap_chain1);
+	const HRESULT result_swap_chain1 = dxgi_factory3->CreateSwapChainForHwnd(m_device2, m_hwindow, &swap_chain_desc, nullptr, nullptr, &swap_chain1);
 	if (FAILED(result_swap_chain1)) {
 		return result_swap_chain1;
 	}
@@ -183,13 +183,13 @@ HRESULT Renderer::InitDevice() {
 	dxgi_factory3->Release();
 
 	// Access the only back buffer of the swap-chain's.
-	ID3D11Texture2D *back_buffer = NULL;
+	ID3D11Texture2D *back_buffer = nullptr;
 	const HRESULT result_back_buffer = m_swap_chain2->GetBuffer(0, __uuidof(ID3D11Texture2D), (void **)&back_buffer);
 	if (FAILED(result_back_buffer)) {
 		return result_back_buffer;
 	}
 	// Create a ID3D11RenderTargetView.
-	const HRESULT result_render_target_view = m_device2->CreateRenderTargetView(back_buffer, NULL, &m_render_target_view);
+	const HRESULT result_render_target_view = m_device2->CreateRenderTargetView(back_buffer, nullptr, &m_render_target_view);
 	// Release the back buffer.
 	back_buffer->Release();
 	if (FAILED(result_render_target_view)) {
@@ -201,7 +201,7 @@ HRESULT Renderer::InitDevice() {
 	// 1. Number of render targets to bind.
 	// 2. Pointer to an array of ID3D11RenderTargetViews
 	// 3. The depth-stencil state is not bound.
-	m_device_context2->OMSetRenderTargets(1, &m_render_target_view, NULL);
+	m_device_context2->OMSetRenderTargets(1, &m_render_target_view, nullptr);
 
 	// Setup the (default) viewport
 	D3D11_VIEWPORT viewport;

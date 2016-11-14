@@ -36,8 +36,8 @@ inline HRESULT CompileShaderFromFile(LPCWSTR file_name, LPCSTR entry_point, LPCS
 	// 7. A combination of effect compile options.
 	// 8. A pointer to a variable that receives a pointer to the ID3DBlob interface that you can use to access the compiled code.
 	// 9. An optional pointer to a variable that receives a pointer to the ID3DBlob interface that you can use to access compiler error messages.
-	ID3DBlob *error_blob = NULL;
-	const HRESULT result_compile = D3DCompileFromFile(file_name, NULL, NULL, entry_point, shader_target, shader_flags, 0, output_blob, &error_blob);
+	ID3DBlob *error_blob = nullptr;
+	const HRESULT result_compile = D3DCompileFromFile(file_name, nullptr, nullptr, entry_point, shader_target, shader_flags, 0, output_blob, &error_blob);
 	if (FAILED(result_compile)) {
 		if (error_blob) {
 			// Sends a string to the debugger for display.
