@@ -9,7 +9,7 @@ Projects to start learning Direct3D
 * [Project 5](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%205): Rendering and animating multiple cubes that are defined in object space.
 * [Project 6](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%206): Lighting.
 * [Project 7](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%207): Textures.
-* [Project 8](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%208): Switcing between windowed and fullscreen mode.
+* [Project 8](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%208): Switching between windowed and fullscreen mode.
 
 ## Development
 * **Platform**: (minimum) Windows 8.1 32 Bit and 64 Bit (Windows API + Direct3D 11.1)
