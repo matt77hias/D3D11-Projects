@@ -1,5 +1,5 @@
 # Direct3D-11-Projects
-Projects to start learning Direct3D (D3D)
+Projects to start learning Direct3D (D3D).
 
 ## About
 * [Project 1](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%201): Creating a window for displaying.
