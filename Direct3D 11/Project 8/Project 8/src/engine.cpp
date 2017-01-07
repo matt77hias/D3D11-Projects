@@ -238,6 +238,7 @@ void Engine::Run(int nCmdShow) {
 			if (m_mode_switch || lost_full_screen) {
 				m_renderer->SwitchMode(!lost_full_screen);
 				m_mode_switch = false;
+				continue;
 			}
 
 			m_renderer->Render();
