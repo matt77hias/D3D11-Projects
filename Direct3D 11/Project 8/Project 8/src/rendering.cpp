@@ -218,9 +218,13 @@ HRESULT Renderer::SetupSwapChain() {
 	swap_chain_desc.BufferCount        = 1;										// The number of buffers in the swap chain.
 	swap_chain_desc.Flags              = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
+	DXGI_SWAP_CHAIN_FULLSCREEN_DESC swap_chain_fullscreen_desc;
+	ZeroMemory(&swap_chain_fullscreen_desc, sizeof(swap_chain_fullscreen_desc));
+	swap_chain_fullscreen_desc.Windowed = TRUE;
+
 	// Get the IDXGISwapChain1.
 	IDXGISwapChain1 *swap_chain1;
-	const HRESULT result_swap_chain1 = dxgi_factory3->CreateSwapChainForHwnd(m_device2, m_hwindow, &swap_chain_desc, nullptr, nullptr, &swap_chain1);
+	const HRESULT result_swap_chain1 = dxgi_factory3->CreateSwapChainForHwnd(m_device2, m_hwindow, &swap_chain_desc, &swap_chain_fullscreen_desc, nullptr, &swap_chain1);
 	// Release the IDXGIFactory3.
 	dxgi_factory3->Release();
 	if (FAILED(result_swap_chain1)) {

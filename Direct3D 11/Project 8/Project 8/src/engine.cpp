@@ -130,6 +130,7 @@ HRESULT Engine::InitializeWindow() {
 	//-----------------------------------------------------------------------------
 	// Structure ontaining window class information. 
 	WNDCLASSEX wcex;
+	ZeroMemory(&wcex, sizeof(wcex));
 	// The size, in bytes, of this structure.
 	wcex.cbSize = sizeof(WNDCLASSEX);
 	// The class style(s)
