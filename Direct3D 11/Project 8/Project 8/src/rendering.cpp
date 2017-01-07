@@ -293,6 +293,7 @@ void Renderer::Render() {
 void Renderer::SwitchMode(bool toggle) {
 	// Release the swap chain buffers.
 	m_render_target_view->Release();
+	m_render_target_view = nullptr;
 
 	BOOL current = false;
 	if (toggle) {
@@ -302,9 +303,9 @@ void Renderer::SwitchMode(bool toggle) {
 	}
 
 	// Recreate the swap chain buffers.
-	m_swap_chain2->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
-	SetupRenderTargetView();
-	m_device_context2->OMSetRenderTargets(1, &m_render_target_view, nullptr);
+	cout << m_swap_chain2->ResizeBuffers(0, 0, 0, DXGI_FORMAT_UNKNOWN, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
+	cout << SetupRenderTargetView();
+	//m_device_context2->OMSetRenderTargets(1, &m_render_target_view, nullptr);
 
 	m_swap_chain2->GetFullscreenState(&current, nullptr);
 	m_fullscreen = (current != 0);
