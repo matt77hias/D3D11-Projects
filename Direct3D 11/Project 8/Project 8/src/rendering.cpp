@@ -37,8 +37,8 @@ extern "C" {
 //-----------------------------------------------------------------------------
 #pragma region
 
-Renderer::Renderer(HWND hwindow, bool fullscreen) :
-	m_loaded(false), m_hwindow(hwindow), m_fullscreen(fullscreen),
+Renderer::Renderer(HWND hwindow) :
+	m_loaded(false), m_hwindow(hwindow), m_fullscreen(false),
 	m_render_target_view(nullptr), m_swap_chain2(nullptr), m_device_context2(nullptr), m_device2(nullptr) {
 
 	const HRESULT result_renderer = InitializeRenderer();
@@ -64,12 +64,6 @@ HRESULT Renderer::InitializeRenderer() {
 	if (FAILED(result_swapchain)) {
 		return result_swapchain;
 	}
-
-	// Set mode (full screen or windowed).
-	BOOL current = m_fullscreen;
-	m_swap_chain2->SetFullscreenState(current, nullptr);
-	m_swap_chain2->GetFullscreenState(&current, nullptr);
-	m_fullscreen = (current != 0);
 
 	// Setup the ID3D11RenderTargetView
 	const HRESULT result_render_target_view = SetupRenderTargetView();
@@ -218,6 +212,7 @@ HRESULT Renderer::SetupSwapChain() {
 	swap_chain_desc.BufferCount        = 1;										// The number of buffers in the swap chain.
 	swap_chain_desc.Flags              = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
+	// Create a DXGI_SWAP_CHAIN_FULLSCREEN_DESC.
 	DXGI_SWAP_CHAIN_FULLSCREEN_DESC swap_chain_fullscreen_desc;
 	ZeroMemory(&swap_chain_fullscreen_desc, sizeof(swap_chain_fullscreen_desc));
 	swap_chain_fullscreen_desc.Windowed = TRUE;
@@ -237,6 +232,9 @@ HRESULT Renderer::SetupSwapChain() {
 	if (FAILED(result_swap_chain2)) {
 		return result_swap_chain2;
 	}
+
+	// Set mode windowed.
+	m_swap_chain2->SetFullscreenState(FALSE, nullptr);
 
 	return S_OK;
 }

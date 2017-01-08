@@ -92,7 +92,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 //-----------------------------------------------------------------------------
 #pragma region
 
-Engine::Engine(HINSTANCE hinstance, bool fullscreen) : m_loaded(false), m_hinstance(hinstance), 
+Engine::Engine(HINSTANCE hinstance) : m_loaded(false), m_hinstance(hinstance), 
 	m_renderer(nullptr), m_mode_switch(false) {
 
 	//Initialize a window.
@@ -109,7 +109,7 @@ Engine::Engine(HINSTANCE hinstance, bool fullscreen) : m_loaded(false), m_hinsta
 	PrintConsoleHeader();
 
 	// Create renderer.
-	m_renderer = new Renderer(m_hwindow, fullscreen);
+	m_renderer = new Renderer(m_hwindow);
 
 	m_loaded = m_renderer->IsLoaded();
 }
@@ -210,13 +210,17 @@ HRESULT Engine::AttachConsole() {
 	return S_OK;
 }
 
-void Engine::Run(int nCmdShow) {
+void Engine::Run(int nCmdShow, bool start_fullscreen) {
 	if (!m_loaded) {
 		return;
 	}
 
 	// Set the specified window's show state.
 	ShowWindow(m_hwindow, nCmdShow);
+
+	if (start_fullscreen) {
+		m_renderer->SwitchMode(true);
+	}
 
 	// Enter the message loop.
 	MSG msg;
@@ -232,7 +236,6 @@ void Engine::Run(int nCmdShow) {
 			DispatchMessage(&msg);
 		}
 		else {
-
 			// Handle switch between full screen and windowed mode.
 			const bool lost_full_screen = m_renderer->LostFullScreen();
 			if (m_mode_switch || lost_full_screen) {
@@ -271,8 +274,8 @@ void Engine::Run(int nCmdShow) {
  */
 int WINAPI WinMain(HINSTANCE hinstance, HINSTANCE, LPSTR, int nCmdShow) {
 	// Create the engine, then run it.
-	g_engine = new Engine(hinstance, false);
-	g_engine->Run(nCmdShow);
+	g_engine = new Engine(hinstance);
+	g_engine->Run(nCmdShow, false);
 	delete g_engine;
 	
 	return 0;

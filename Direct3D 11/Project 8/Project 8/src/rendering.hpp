@@ -90,11 +90,8 @@ protected:
 
 	 @param[in]		hwindow
 					The main window handle.
-	 @param[in]		fullscreen
-					If @c true the renderer should use fullscreen mode.
-					Otherwise the renderer should use windowed mode.
 	 */
-	Renderer(HWND hwindow, bool fullscreen);
+	Renderer(HWND hwindow);
 
 	/**
 	 Destructs this renderer.

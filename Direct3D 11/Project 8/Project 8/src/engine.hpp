@@ -49,11 +49,8 @@ public:
 
 	 @param[in]		hinstance
 					A handle to the current instance of the application.
-	 @param[in]		fullscreen
-					If @c true the renderer should use fullscreen mode.
-					Otherwise the renderer should use windowed mode.
 	 */
-	Engine(HINSTANCE hinstance, bool fullscreen);
+	Engine(HINSTANCE hinstance);
 
 	/**
 	 Destructs this engine.
@@ -65,8 +62,11 @@ public:
 
 	 @param[in]		nCmdShow
 					Controls how the engine window is to be shown.
+	 @param[in]		start_fullscreen
+					If @c true the renderer should start in fullscreen mode.
+					Otherwise the renderer should start in windowed mode.
 	 */
-	void Run(int nCmdShow);
+	void Run(int nCmdShow, bool start_fullscreen);
 
 	/**
 	 Returns a handle to the window of this engine.
