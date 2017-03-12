@@ -5,8 +5,8 @@
 //-----------------------------------------------------------------------------
 #pragma region
 
-#define ENGINE_VERSION_MAJOR 0
-#define ENGINE_VERSION_MINOR 1
+#define ENGINE_VERSION_MAJOR 1
+#define ENGINE_VERSION_MINOR 0
 #define ENGINE_VERSION_PATCH 0
 
 #define ENGINE_QUOTE(S) #S
@@ -25,7 +25,7 @@
  */
 inline void PrintConsoleHeader() {
 	printf("Engine version %s of %s at %s\n", ENGINE_VERSION_STRING, __DATE__, __TIME__);
-	printf("Copyright (c) 2016 Matthias Moulin.\n");
+	printf("Copyright (c) 2016-2017 Matthias Moulin.\n");
 	fflush(stdout);
 }
 
