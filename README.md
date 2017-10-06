@@ -15,7 +15,7 @@ Projects to start learning Direct3D (D3D).
 ## Development
 * **Platform**: (minimum) Windows 8.1 32 Bit and 64 Bit (Windows API + Direct3D 11.1)
 * **Programming Language**: C++11
-* **Compiler**: MSVC++ 14.0
+* **Compiler**: MSVC++ 15.0
 * **IDE**: Visual Studio 2017
 
 ## Codebase
