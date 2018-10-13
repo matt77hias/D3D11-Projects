@@ -1,6 +1,9 @@
-[![License][s1]][li]
+[![Code quality][s2]][co]  [![License][s3]][li]
 
-[s1]: https://img.shields.io/badge/licence-GPL%203.0-blue.svg
+[s2]: https://api.codacy.com/project/badge/Grade/377d3777301f4bc09d1626de1c96ec8d
+[s3]: https://img.shields.io/badge/licence-GPL%203.0-blue.svg
+
+[co]: https://www.codacy.com/app/matt77hias/Direct3D-11-Projects?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=matt77hias/Direct3D-11-Projects&amp;utm_campaign=Badge_Grade
 [li]: https://raw.githubusercontent.com/matt77hias/Direct3D-11-Projects/master/LICENSE.txt
 
 # Direct3D-11-Projects
