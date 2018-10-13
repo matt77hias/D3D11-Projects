@@ -54,7 +54,7 @@ public:
 	/**
 	 Destructs this engine.
 	 */
-	virtual ~Engine();
+	~Engine();
 
 	/**
 	 Runs the engine.
