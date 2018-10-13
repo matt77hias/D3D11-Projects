@@ -38,7 +38,7 @@ public:
 	/**
 	 Destructs this renderer.
 	 */
-	virtual ~Renderer();
+	~Renderer();
 
 	/**
 	 Checks whether this renderer is loaded.
