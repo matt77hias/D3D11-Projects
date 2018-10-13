@@ -50,7 +50,7 @@ public:
 	 @param[in]		hinstance
 					A handle to the current instance of the application.
 	 */
-	Engine(HINSTANCE hinstance);
+	explicit Engine(HINSTANCE hinstance);
 
 	/**
 	 Destructs this engine.
