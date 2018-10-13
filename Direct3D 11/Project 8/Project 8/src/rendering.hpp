@@ -96,7 +96,7 @@ protected:
 	/**
 	 Destructs this renderer.
 	 */
-	virtual ~Renderer();
+	~Renderer();
 
 	/**
 	 Initializes this renderer.
