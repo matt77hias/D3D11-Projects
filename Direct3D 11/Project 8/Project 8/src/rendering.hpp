@@ -91,7 +91,7 @@ protected:
 	 @param[in]		hwindow
 					The main window handle.
 	 */
-	Renderer(HWND hwindow);
+	explicit Renderer(HWND hwindow);
 
 	/**
 	 Destructs this renderer.
