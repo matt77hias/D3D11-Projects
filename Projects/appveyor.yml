@@ -1,0 +1,36 @@
+###############################################################################
+# General Configuration
+###############################################################################
+version: 1.0.{build}
+
+###############################################################################
+# Environment Configuration
+###############################################################################
+image: Visual Studio 2017
+
+configuration: 
+ - Release
+ - Debug
+platform: 
+  - x64
+  - x86
+environment:
+  matrix:
+  - solution_name: "Projects/Project1/Project1.sln"
+  - solution_name: "Projects/Project2/Project2.sln"
+  - solution_name: "Projects/Project3/Project3.sln"
+  - solution_name: "Projects/Project4/Project4.sln"
+  - solution_name: "Projects/Project5/Project5.sln"
+  - solution_name: "Projects/Project6/Project6.sln"
+  - solution_name: "Projects/Project7/Project7.sln"
+  - solution_name: "Projects/Project8/Project8.sln"
+
+###############################################################################
+# Build Configuration
+###############################################################################
+build:
+  parallel: true
+  verbosity: normal
+
+build_script:
+  - msbuild %solution_name%
