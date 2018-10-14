@@ -15,14 +15,14 @@ Projects to start learning Direct3D (D3D).
 
 <p align="center"><img src="res/d3d11.png"></p>
 
-* [Project 1](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%201): Creating a window for displaying.
-* [Project 2](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%202): Rendering the background color of a window.
-* [Project 3](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%203): Rendering a triangle that is defined in projection space.
-* [Project 4](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%204): Rendering and animating a cube that is defined in object space.
-* [Project 5](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%205): Rendering and animating multiple cubes that are defined in object space.
-* [Project 6](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%206): Lighting.
-* [Project 7](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%207): Textures.
-* [Project 8](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Direct3D%2011/Project%208): Switching between windowed and fullscreen mode.
+* [Project 1](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Projects/Project1): Creating a window for displaying.
+* [Project 2](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Projects/Project2): Rendering the background color of a window.
+* [Project 3](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Projects/Project3): Rendering a triangle that is defined in projection space.
+* [Project 4](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Projects/Project4): Rendering and animating a cube that is defined in object space.
+* [Project 5](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Projects/Project5): Rendering and animating multiple cubes that are defined in object space.
+* [Project 6](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Projects/Project6): Lighting.
+* [Project 7](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Projects/Project7): Textures.
+* [Project 8](https://github.com/matt77hias/Direct3D-11-Projects/tree/master/Projects/Project8): Switching between windowed and fullscreen mode.
 
 ## Development
 * **Platform**: (minimum) Windows 8.1 32 Bit and 64 Bit (Windows API + Direct3D 11.1)
