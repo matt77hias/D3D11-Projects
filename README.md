@@ -11,7 +11,7 @@
 # Direct3D-11-Projects
 
 ## About
-Projects to start learning Direct3D (D3D).
+Projects to start learning Direct3D11 (D3D11).
 
 <p align="center"><img src="res/d3d11.png"></p>
 
