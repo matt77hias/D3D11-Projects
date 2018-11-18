@@ -15,10 +15,12 @@
 *.tpp                               text eol=crlf
 
 # Source Files
+*.c                                 text eol=crlf
+*.cc                                text eol=crlf
 *.cpp                               text eol=crlf
 
 # Shader Files
-*.fx                                text eol=crlf
+*.fx                                text eol=crlf  
 *.hlsl                              text eol=crlf
 *.hlsli                             text eol=crlf
 
@@ -37,13 +39,15 @@
 ###############################################################################
 
 # Header Files
-*.h                                 linguist-language=C++
+*.h                                 linguist-language=C
 *.hpp                               linguist-language=C++
 *.inc                               linguist-language=C++
 *.inl                               linguist-language=C++
 *.tpp                               linguist-language=C++
 
 # Source Files
+*.c                                 linguist-language=C
+*.cc                                linguist-language=C++
 *.cpp                               linguist-language=C++
 
 # Shader Files
