@@ -20,7 +20,6 @@
 *.cpp                               text eol=crlf
 
 # Shader Files
-*.fx                                text eol=crlf  
 *.hlsl                              text eol=crlf
 *.hlsli                             text eol=crlf
 
@@ -39,7 +38,12 @@
 ###############################################################################
 
 # Header Files
-*.h                                 linguist-language=C
+
+Common/DirectXTex/**/*.h            linguist-language=C++
+Common/fmt/**/*.h                   linguist-language=C++
+Common/GSL/**/*.h                   linguist-language=C++
+Common/ImGui/**/*.h                 linguist-language=C++
+
 *.hpp                               linguist-language=C++
 *.inc                               linguist-language=C++
 *.inl                               linguist-language=C++
@@ -51,6 +55,15 @@
 *.cpp                               linguist-language=C++
 
 # Shader Files
-*.fx                                linguist-language=HLSL
 *.hlsl                              linguist-language=HLSL
 *.hlsli                             linguist-language=HLSL
+
+###############################################################################
+# Explicitly declare vendored for the following files
+###############################################################################
+
+Common/DirectXTex/**/*              linguist-vendored
+Common/fmt/**/*                     linguist-vendored
+Common/GSL/**/*                     linguist-vendored
+Common/ImGui/**/*                   linguist-vendored
+Common/MAGE/**/*                    linguist-vendored
