@@ -13,6 +13,8 @@
 ## About
 Projects to start learning Direct3D 11 (D3D11)
 
+**Note**: [Version 1.2](https://github.com/matt77hias/D3D11-Projects/releases/tag/v1.2) supports Windows 8.1 and uses a more Object-Oriented Design with more verbose documentation as opposed to the current version.
+
 <p align="center"><img src="res/d3d11.png"></p>
 
 * [Project 1](https://github.com/matt77hias/D3D11-Projects/tree/master/Projects/Project1): Creating a window for displaying.
