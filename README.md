@@ -11,7 +11,7 @@
 # D3D11-Projects
 
 ## About
-Projects to start learning Direct3D 11 (D3D11).
+Projects to start learning Direct3D 11 (D3D11)
 
 <p align="center"><img src="res/d3d11.png"></p>
 
@@ -23,6 +23,36 @@ Projects to start learning Direct3D 11 (D3D11).
 * [Project 6](https://github.com/matt77hias/D3D11-Projects/tree/master/Projects/Project6): Lighting.
 * [Project 7](https://github.com/matt77hias/D3D11-Projects/tree/master/Projects/Project7): Textures.
 * [Project 8](https://github.com/matt77hias/D3D11-Projects/tree/master/Projects/Project8): Switching between windowed and fullscreen mode.
+
+## Development
+* **Platform**: Windows 10 32 Bit and 64 Bit (Windows API + Direct3D 11)
+* **Engine Programming Language**: ISO C++ Latest Draft Standard (> C++17)
+* **Scripting Language**: ISO C++ Latest Draft Standard (> C++17)
+* **Shading Language**: HLSL (Shader Model 5.0)
+* **Dependencies**:
+  * d3d12.lib
+  * dxgi.lib
+  * (d3dcompiler.lib)
+* **Compiler**: MSVC++ 15.9.1
+* **IDE**: Visual Studio 2017
+
+## Codebase
+* [(Dear) ImGui](https://github.com/ocornut/imgui) [[License](https://github.com/ocornut/imgui/blob/master/LICENSE.txt)]
+  * [stb](https://github.com/nothings/stb) [[License](https://creativecommons.org/share-your-work/public-domain/cc0/)]
+* [{fmt}](https://github.com/fmtlib/fmt) [[License](https://github.com/fmtlib/fmt/blob/master/LICENSE.rst)]
+* Microsoft Corporation Libraries:
+  * [Direct3D 11](https://docs.microsoft.com/nl-be/windows/desktop/direct3d11/atoc-dx-graphics-direct3d-11)
+  * [DirectXShaderCompiler](https://github.com/Microsoft/DirectXShaderCompiler) [[License](https://github.com/Microsoft/DirectXShaderCompiler/blob/master/LICENSE.TXT)]
+  * [DirectXMath](https://github.com/Microsoft/DirectXMath) [[License](https://github.com/Microsoft/DirectXMath/blob/master/LICENSE)]
+  * [DirectXTex](https://github.com/Microsoft/DirectXTex) [[License](https://github.com/Microsoft/DirectXTex/blob/master/LICENSE)]
+  * [Guidelines Support Library (GSL)](https://github.com/Microsoft/GSL) [[License](https://github.com/Microsoft/GSL/blob/master/LICENSE)]
+  * [Microsoft DirectX Graphics Infrastructure (DXGI)](https://docs.microsoft.com/en-us/windows/desktop/direct3ddxgi/d3d10-graphics-programming-guide-dxgi)
+  * [Windows Runtime C++ Template Library (WRL)](https://docs.microsoft.com/nl-be/cpp/windows/windows-runtime-cpp-template-library-wrl?view=vs-2017)
+* [std](https://en.cppreference.com/w/cpp/header)
+
+<p align="center">Copyright © 2016-2018 Matthias Moulin. All Rights Reserved.</p>
+
+
 
 ## Development
 * **Platform**: (minimum) Windows 8.1 32 Bit and 64 Bit (Windows API + Direct3D 11.1)
