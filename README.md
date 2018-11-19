@@ -37,6 +37,9 @@ Projects to start learning Direct3D 11 (D3D11)
 * **IDE**: Visual Studio 2017
 
 ## Codebase
+Based on:
+[explanation](https://code.msdn.microsoft.com/windowsdesktop/Direct3D-Tutorial-Win32-829979ef) + [code](https://github.com/walbourn/directx-sdk-samples/tree/master/Direct3D11Tutorials)
+
 * [(Dear) ImGui](https://github.com/ocornut/imgui) [[License](https://github.com/ocornut/imgui/blob/master/LICENSE.txt)]
   * [stb](https://github.com/nothings/stb) [[License](https://creativecommons.org/share-your-work/public-domain/cc0/)]
 * [{fmt}](https://github.com/fmtlib/fmt) [[License](https://github.com/fmtlib/fmt/blob/master/LICENSE.rst)]
@@ -51,15 +54,3 @@ Projects to start learning Direct3D 11 (D3D11)
 * [std](https://en.cppreference.com/w/cpp/header)
 
 <p align="center">Copyright © 2016-2018 Matthias Moulin. All Rights Reserved.</p>
-
-
-
-## Development
-* **Platform**: (minimum) Windows 8.1 32 Bit and 64 Bit (Windows API + Direct3D 11.1)
-* **Programming Language**: C++11
-* **Compiler**: MSVC++ 15.0
-* **IDE**: Visual Studio 2017
-
-## Codebase
-Based on:
-[explanation](https://code.msdn.microsoft.com/windowsdesktop/Direct3D-Tutorial-Win32-829979ef) + [code](https://github.com/walbourn/directx-sdk-samples/tree/master/Direct3D11Tutorials)
