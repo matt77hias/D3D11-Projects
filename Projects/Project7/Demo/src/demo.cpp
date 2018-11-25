@@ -5,6 +5,7 @@
 
 #include <SDKDDKVer.h>
 #include "directxmath\facade.hpp"
+#include "directxtex\DDSTextureLoader.h"
 #include "exception\exception.hpp"
 #include "logging\dump.hpp"
 #include "system\timer.hpp"
@@ -89,35 +90,37 @@ namespace {
 	ComPtr< ID3D11InputLayout > g_vertex_layout;
 	ComPtr< ID3D11Buffer > g_vertex_buffer;
 	ComPtr< ID3D11Buffer > g_index_buffer;
+	
+	ComPtr< ID3D11Buffer > g_camera_buffer;
 	ComPtr< ID3D11Buffer > g_model_buffer;
+	
+	ComPtr< ID3D11ShaderResourceView > g_srv;
+	ComPtr< ID3D11SamplerState > g_sampler;
 	
 	struct Vertex {
 		F32x3 m_p;
-		F32x3 m_n;
+		F32x2 m_tex;
 		static const D3D11_INPUT_ELEMENT_DESC s_input_element_descs[2u];
 	};
 
-	static_assert(24u == sizeof(Vertex), "Vertex struct/layout mismatch");
+	static_assert(20u == sizeof(Vertex), "Vertex struct/layout mismatch");
 
 	const D3D11_INPUT_ELEMENT_DESC Vertex::s_input_element_descs[] = { 
 		{ "POSITION", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u },
-		{ "NORMAL",   0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u }
+		{ "TEXCOORD", 0u, DXGI_FORMAT_R32G32_FLOAT,    0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0u }
 	};
-
-	struct alignas(16) Transform {
-		DirectX::XMMATRIX m_object_to_world;
+	
+	struct alignas(16) Camera {
 		DirectX::XMMATRIX m_world_to_camera;
 		DirectX::XMMATRIX m_camera_to_projection;
 	};
-
+	
 	struct alignas(16) Model {
-		Transform m_transform;
-		F32x4 m_d_lights[2u];
-		F32x4 m_color_lights[2u];
+		DirectX::XMMATRIX m_object_to_world;
 		F32x4 m_color;
 	};
-
-	Transform g_camera;
+	
+	Camera g_camera;
 
 	void Init(NotNull< HINSTANCE > instance) {
 		#ifdef _DEBUG
@@ -341,53 +344,39 @@ namespace {
 															   nullptr,
 															   g_ps.ReleaseAndGetAddressOf());
 			ThrowIfFailed(result, "Pixel shader creation failed: {:08X}.", result);
-		}
-	
-		// Initialize the solid pixel shader.
-		{
-			// Read the compiled pixel shader blob from file.
-			ComPtr< ID3DBlob > shader_blob;
-			{
-				const HRESULT result = D3DReadFileToBlob(L"solid_PS.cso", shader_blob.ReleaseAndGetAddressOf());
-				ThrowIfFailed(result, "Shader blob reading failed: {:08X}.", result);
-			}
-
-			// Create the pixel shader.
-			const HRESULT result = g_device->CreatePixelShader(shader_blob->GetBufferPointer(),
-															   shader_blob->GetBufferSize(),
-															   nullptr,
-															   g_solid_ps.ReleaseAndGetAddressOf());
-			ThrowIfFailed(result, "Pixel shader creation failed: {:08X}.", result);
+			
+			// Bind the pixel shader.
+			g_device_context->PSSetShader(g_ps.Get(), nullptr, 0u);
 		}
 
 		// Initialize the vertex buffer.
 		{
 			// Create the vertices.
 			static constexpr Vertex vertices[] = {
-				{ {-1.0f,  1.0f, -1.0f }, { 0.0f,  1.0f,  0.0f} },
-				{ { 1.0f,  1.0f, -1.0f }, { 0.0f,  1.0f,  0.0f} },
-				{ { 1.0f,  1.0f,  1.0f }, { 0.0f,  1.0f,  0.0f} },
-				{ {-1.0f,  1.0f,  1.0f }, { 0.0f,  1.0f,  0.0f} },
-				{ {-1.0f, -1.0f, -1.0f }, { 0.0f, -1.0f,  0.0f} },
-				{ { 1.0f, -1.0f, -1.0f }, { 0.0f, -1.0f,  0.0f} },
-				{ { 1.0f, -1.0f,  1.0f }, { 0.0f, -1.0f,  0.0f} },
-				{ {-1.0f, -1.0f,  1.0f }, { 0.0f, -1.0f,  0.0f} },
-				{ {-1.0f, -1.0f,  1.0f }, {-1.0f,  0.0f,  0.0f} },
-				{ {-1.0f, -1.0f, -1.0f }, {-1.0f,  0.0f,  0.0f} },
-				{ {-1.0f,  1.0f, -1.0f }, {-1.0f,  0.0f,  0.0f} },
-				{ {-1.0f,  1.0f,  1.0f }, {-1.0f,  0.0f,  0.0f} },
-				{ { 1.0f, -1.0f,  1.0f }, { 1.0f,  0.0f,  0.0f} },
-				{ { 1.0f, -1.0f, -1.0f }, { 1.0f,  0.0f,  0.0f} },
-				{ { 1.0f,  1.0f, -1.0f }, { 1.0f,  0.0f,  0.0f} },
-				{ { 1.0f,  1.0f,  1.0f }, { 1.0f,  0.0f,  0.0f} },
-				{ {-1.0f, -1.0f, -1.0f }, { 0.0f,  0.0f, -1.0f} },
-				{ { 1.0f, -1.0f, -1.0f }, { 0.0f,  0.0f, -1.0f} },
-				{ { 1.0f,  1.0f, -1.0f }, { 0.0f,  0.0f, -1.0f} },
-				{ {-1.0f,  1.0f, -1.0f }, { 0.0f,  0.0f, -1.0f} },
-				{ {-1.0f, -1.0f,  1.0f }, { 0.0f,  0.0f,  1.0f} },
-				{ { 1.0f, -1.0f,  1.0f }, { 0.0f,  0.0f,  1.0f} },
-				{ { 1.0f,  1.0f,  1.0f }, { 0.0f,  0.0f,  1.0f} },
-				{ {-1.0f,  1.0f,  1.0f }, { 0.0f,  0.0f,  1.0f} }
+				{ {-1.0f,  1.0f, -1.0f }, { 1.0f, 0.0f } },
+				{ { 1.0f,  1.0f, -1.0f }, { 0.0f, 0.0f } },
+				{ { 1.0f,  1.0f,  1.0f }, { 0.0f, 1.0f } },
+				{ {-1.0f,  1.0f,  1.0f }, { 1.0f, 1.0f } },
+				{ {-1.0f, -1.0f, -1.0f }, { 0.0f, 0.0f } },
+				{ { 1.0f, -1.0f, -1.0f }, { 1.0f, 0.0f } },
+				{ { 1.0f, -1.0f,  1.0f }, { 1.0f, 1.0f } },
+				{ {-1.0f, -1.0f,  1.0f }, { 0.0f, 1.0f } },
+				{ {-1.0f, -1.0f,  1.0f }, { 0.0f, 1.0f } },
+				{ {-1.0f, -1.0f, -1.0f }, { 1.0f, 1.0f } },
+				{ {-1.0f,  1.0f, -1.0f }, { 1.0f, 0.0f } },
+				{ {-1.0f,  1.0f,  1.0f }, { 0.0f, 0.0f } },
+				{ { 1.0f, -1.0f,  1.0f }, { 1.0f, 1.0f } },
+				{ { 1.0f, -1.0f, -1.0f }, { 0.0f, 1.0f } },
+				{ { 1.0f,  1.0f, -1.0f }, { 0.0f, 0.0f } },
+				{ { 1.0f,  1.0f,  1.0f }, { 1.0f, 0.0f } },
+				{ {-1.0f, -1.0f, -1.0f }, { 0.0f, 1.0f } },
+				{ { 1.0f, -1.0f, -1.0f }, { 1.0f, 1.0f } },
+				{ { 1.0f,  1.0f, -1.0f }, { 1.0f, 0.0f } },
+				{ {-1.0f,  1.0f, -1.0f }, { 0.0f, 0.0f } },
+				{ {-1.0f, -1.0f,  1.0f }, { 1.0f, 1.0f } },
+				{ { 1.0f, -1.0f,  1.0f }, { 0.0f, 1.0f } },
+				{ { 1.0f,  1.0f,  1.0f }, { 0.0f, 0.0f } },
+				{ {-1.0f,  1.0f,  1.0f }, { 1.0f, 0.0f } }
 			};
 
 			// Describe the buffer resource.
@@ -450,6 +439,42 @@ namespace {
 			g_device_context->IASetIndexBuffer(g_index_buffer.Get(), DXGI_FORMAT_R8_UINT, 0u);
 		}
 	
+		// Initialize the camera buffer.
+		{
+			// Create the camera.
+			Camera camera;
+			{
+				using namespace DirectX;
+				
+				static const XMVECTOR p_eye   = { 0.0f, 3.0f, -6.0f, 0.0f };
+				static const XMVECTOR p_focus = { 0.0f, 1.0f,  0.0f, 0.0f };
+				static const XMVECTOR d_up    = { 0.0f, 1.0f,  0.0f, 0.0f };
+				camera.m_world_to_camera = XMMatrixLookAtLH(p_eye, p_focus, d_up);
+				const F32 aspect_ratio = g_display_resolution[0u] 
+										 / static_cast< F32 >(g_display_resolution[1u]);
+				camera.m_camera_to_projection 
+					= XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, aspect_ratio, 0.01f, 100.0f);
+			}
+			
+			// Describe the buffer resource.
+			D3D11_BUFFER_DESC buffer_desc = {};
+			buffer_desc.ByteWidth = sizeof(Camera);
+			buffer_desc.Usage     = D3D11_USAGE_DEFAULT;
+			buffer_desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+
+			// Specify data for initializing a subresource.
+			D3D11_SUBRESOURCE_DATA init_data = {};
+			init_data.pSysMem     = &camera;
+
+			const HRESULT result = g_device->CreateBuffer(&buffer_desc,
+														  &init_data,
+														  g_camera_buffer.ReleaseAndGetAddressOf());
+			ThrowIfFailed(result, "Transform buffer creation failed: {:08X}.", result);
+
+			// Bind the camera buffer.
+			g_device_context->VSSetConstantBuffers(0u, 1u, g_camera_buffer.GetAddressOf());
+		}
+	
 		// Initialize the model buffer.
 		{
 			// Describe the buffer resource.
@@ -464,23 +489,33 @@ namespace {
 			ThrowIfFailed(result, "Transform buffer creation failed: {:08X}.", result);
 
 			// Bind the model buffer.
-			g_device_context->VSSetConstantBuffers(0u, 1u, g_model_buffer.GetAddressOf());
-			g_device_context->PSSetConstantBuffers(0u, 1u, g_model_buffer.GetAddressOf());
+			g_device_context->VSSetConstantBuffers(1u, 1u, g_model_buffer.GetAddressOf());
+			g_device_context->PSSetConstantBuffers(1u, 1u, g_model_buffer.GetAddressOf());
 		}
-
-		// Initialize the camera.
+		
+		// Initialize the SRV.
 		{
-			using namespace DirectX;
-
-			g_camera.m_object_to_world = XMMatrixIdentity();
-			static const XMVECTOR p_eye   = { 0.0f, 4.0f, -10.0f, 0.0f };
-			static const XMVECTOR p_focus = { 0.0f, 1.0f,   0.0f, 0.0f };
-			static const XMVECTOR d_up    = { 0.0f, 1.0f,   0.0f, 0.0f };
-			g_camera.m_world_to_camera = XMMatrixLookAtLH(p_eye, p_focus, d_up);
-			const F32 aspect_ratio = g_display_resolution[0u] 
-				                     / static_cast< F32 >(g_display_resolution[1u]);
-			g_camera.m_camera_to_projection 
-				= XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, aspect_ratio, 0.01f, 100.0f);
+			const HRESULT result = CreateDDSTextureFromFile(g_device.Get(),
+			                                                L"seafloor.dds", 
+			                                                nullptr,
+															g_srv.ReleaseAndGetAddressOf());
+			ThrowIfFailed(result, "Texture SRV creation failed: {:08X}.", result);
+		}
+		
+		// Initialize the sampler.
+		{
+			// Create the sample state.
+			D3D11_SAMPLER_DESC sampler_desc = {};
+			sampler_desc.Filter			= D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+			sampler_desc.AddressU		= D3D11_TEXTURE_ADDRESS_WRAP;
+			sampler_desc.AddressV		= D3D11_TEXTURE_ADDRESS_WRAP;
+			sampler_desc.AddressW		= D3D11_TEXTURE_ADDRESS_WRAP;
+			sampler_desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+			sampler_desc.MinLOD			= 0u;
+			sampler_desc.MaxLOD			= D3D11_FLOAT32_MAX;
+			
+			const HRESULT result = g_device->CreateSamplerState(&sampler_desc, g_sampler.ReleaseAndGetAddressOf());
+			ThrowIfFailed(result, "Sampler creation failed: {:08X}.", result);
 		}
 	}
 
@@ -495,49 +530,13 @@ namespace {
 
 		using namespace DirectX;
 
-		// Setup the lights.
-		F32x4 d_lights[] = {
-			{ -0.577f, 0.577f, -0.577f, 1.0f },
-			{    0.0f,   0.0f,   -1.0f, 1.0f },
-		};
-		static constexpr F32x4 color_lights[] = {
-			{ 0.0f, 0.5f, 0.0f, 1.0f },
-			{ 0.5f, 0.0f, 0.0f, 1.0f }
-		};
-
-		// Rotate the second light around the origin.
-		{
-			const XMMATRIX rotation = XMMatrixRotationY(2.0f * static_cast< F32 >(time));
-			const XMVECTOR d_light = XMVector3Transform(XMLoad(d_lights[1u]), rotation);
-			d_lights[1u] = XMStore< F32x4 >(d_light);
-		}
-
-		g_device_context->PSSetShader(g_ps.Get(), nullptr, 0u);
-
 		// Draw the cube.
-		const XMMATRIX object_to_world           = XMMatrixRotationY(5.0f * static_cast<F32>(time));
+		const XMMATRIX object_to_world = XMMatrixRotationY(2.0f * static_cast< F32 >(time));
 		Model model;
-		model.m_transform.m_object_to_world		 = XMMatrixTranspose(object_to_world);
-		model.m_transform.m_world_to_camera		 = XMMatrixTranspose(g_camera.m_world_to_camera);
-		model.m_transform.m_camera_to_projection = XMMatrixTranspose(g_camera.m_camera_to_projection);
-		model.m_d_lights[0u]			         = d_lights[0u];
-		model.m_d_lights[1u]			         = d_lights[1u];
-		model.m_color_lights[0u]		         = color_lights[0u];
-		model.m_color_lights[1u]		         = color_lights[1u];
+		model.m_object_to_world = XMMatrixTranspose(object_to_world);
+		model.m_color           = { 0.7f, 0.7f, 0.7f, 1.0f };
 		g_device_context->UpdateSubresource(g_model_buffer.Get(), 0u, nullptr, &model, 0u, 0u);
 		g_device_context->DrawIndexed(36u, 0u, 0u);
-
-		g_device_context->PSSetShader(g_solid_ps.Get(), nullptr, 0u);
-
-		// Draw each light.
-		for (std::size_t i = 0u; i < 2u; ++i) {
-			const XMMATRIX scale                = XMMatrixScaling(0.2f, 0.2f, 0.2f);
-			const XMMATRIX object_to_world_i    = scale * XMMatrixTranslationFromVector(5.0f * XMLoad(d_lights[i]));
-			model.m_transform.m_object_to_world = XMMatrixTranspose(object_to_world_i);
-			model.m_color                       = color_lights[i];
-			g_device_context->UpdateSubresource(g_model_buffer.Get(), 0u, nullptr, &model, 0u, 0u);
-			g_device_context->DrawIndexed(36u, 0u, 0u);
-		}
 
 		// Present the back buffer to the front buffer.
 		g_swap_chain->Present(0u, 0u);
