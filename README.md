@@ -11,7 +11,7 @@
 # D3D11-Projects
 
 ## About
-Projects to start learning Direct3D 11 (D3D11)
+Projects to start learning Direct3D 11 (D3D11).
 
 **Note**: [Version 1.2](https://github.com/matt77hias/D3D11-Projects/releases/tag/v1.2) (obsolete) supports Windows 8.1 and uses a more Object-Oriented Design with more verbose documentation as opposed to the current version.
 
