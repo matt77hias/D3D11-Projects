@@ -543,6 +543,20 @@ namespace {
 		g_swap_chain->Present(0u, 0u);
 	}
 
+	void Uninit() noexcept {
+		// Switch to windowed mode since Direct3D is incapable of when in 
+		// fullscreen mode due to certain threading issues that occur behind
+		// the scenes.
+		if (g_swap_chain) {
+			g_swap_chain->SetFullscreenState(FALSE, nullptr);
+		}
+
+		// Reset any device context to the default settings.
+		if (g_device_context) {
+			g_device_context->ClearState();
+		}
+	}
+	
 	[[nodiscard]]
 	int Run(int nCmdShow) {
 		// Show the main window.
@@ -570,6 +584,8 @@ namespace {
 			Render(timer.GetTotalDeltaTime().count());
 		}
 
+		Uninit();
+		
 		return static_cast< int >(msg.wParam);
 	}
 }

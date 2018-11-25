@@ -326,6 +326,20 @@ namespace {
 		}
 	}
 
+	void Uninit() noexcept {
+		// Switch to windowed mode since Direct3D is incapable of when in 
+		// fullscreen mode due to certain threading issues that occur behind
+		// the scenes.
+		if (g_swap_chain) {
+			g_swap_chain->SetFullscreenState(FALSE, nullptr);
+		}
+
+		// Reset any device context to the default settings.
+		if (g_device_context) {
+			g_device_context->ClearState();
+		}
+	}
+	
 	void Render() {
 		static constexpr F32x4 s_background_color 
 			= { 0.0f, 0.117647058f, 0.149019608f, 1.0f };
@@ -364,6 +378,8 @@ namespace {
 			Render();
 		}
 
+		Uninit();
+		
 		return static_cast< int >(msg.wParam);
 	}
 }
