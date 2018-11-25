@@ -1,7 +1,7 @@
 cbuffer Transform : register(b0) {
-	float4x4 g_object_to_world;
-	float4x4 g_world_to_camera;
-	float4x4 g_camera_to_projection;
+	float4x4 g_object_to_world      : packoffset(c0);
+	float4x4 g_world_to_camera      : packoffset(c4);
+	float4x4 g_camera_to_projection : packoffset(c8);
 }
 
 struct VS_INPUT {
