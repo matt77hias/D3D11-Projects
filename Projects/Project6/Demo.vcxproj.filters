@@ -33,4 +33,9 @@
       <Filter>Shader Files</Filter>
     </FxCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Demo\shaders\model.hlsli">
+      <Filter>Shader Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
