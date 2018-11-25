@@ -10,7 +10,7 @@ float4 PS(PS_INPUT input) : SV_Target {
 	
 	float3 c = 0.0f;
 	for (uint i = 0u; i < 2u; ++i) {
-		c += dot(d_lights[i].xyz, n) * color_lights[i].xyz;
+		c += dot(g_d_lights[i].xyz, n) * g_color_lights[i].xyz;
 	}
 
 	return float4(saturate(c), 1.0f);
