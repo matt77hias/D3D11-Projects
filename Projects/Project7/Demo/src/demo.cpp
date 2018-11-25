@@ -446,14 +446,17 @@ namespace {
 			{
 				using namespace DirectX;
 				
-				static const XMVECTOR p_eye   = { 0.0f, 3.0f, -6.0f, 0.0f };
-				static const XMVECTOR p_focus = { 0.0f, 1.0f,  0.0f, 0.0f };
-				static const XMVECTOR d_up    = { 0.0f, 1.0f,  0.0f, 0.0f };
-				camera.m_world_to_camera = XMMatrixLookAtLH(p_eye, p_focus, d_up);
+				static const XMVECTOR p_eye    = { 0.0f, 3.0f, -6.0f, 0.0f };
+				static const XMVECTOR p_focus  = { 0.0f, 1.0f,  0.0f, 0.0f };
+				static const XMVECTOR d_up     = { 0.0f, 1.0f,  0.0f, 0.0f };
+				const XMMATRIX world_to_camera = XMMatrixLookAtLH(p_eye, p_focus, d_up);
 				const F32 aspect_ratio = g_display_resolution[0u] 
 										 / static_cast< F32 >(g_display_resolution[1u]);
-				camera.m_camera_to_projection 
+				const XMMATRIX camera_to_projection
 					= XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, aspect_ratio, 0.01f, 100.0f);
+
+				camera.m_world_to_camera      = XMMatrixTranspose(world_to_camera);
+				camera.m_camera_to_projection = XMMatrixTranspose(camera_to_projection);
 			}
 			
 			// Describe the buffer resource.
@@ -500,6 +503,9 @@ namespace {
 			                                                nullptr,
 															g_srv.ReleaseAndGetAddressOf());
 			ThrowIfFailed(result, "Texture SRV creation failed: {:08X}.", result);
+		
+			// Bind the SRV.
+			g_device_context->PSSetShaderResources(0u, 1u, g_srv.GetAddressOf());
 		}
 		
 		// Initialize the sampler.
@@ -516,6 +522,9 @@ namespace {
 			
 			const HRESULT result = g_device->CreateSamplerState(&sampler_desc, g_sampler.ReleaseAndGetAddressOf());
 			ThrowIfFailed(result, "Sampler creation failed: {:08X}.", result);
+		
+			// Bind the sampler.
+			g_device_context->PSSetSamplers(0u, 1u, g_sampler.GetAddressOf());
 		}
 	}
 
