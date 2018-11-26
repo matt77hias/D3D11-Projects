@@ -22,8 +22,8 @@ environment:
   - solution_name: "Projects/Project4/Demo.sln"
   - solution_name: "Projects/Project5/Demo.sln"
   - solution_name: "Projects/Project6/Demo.sln"
-  #- solution_name: "Projects/Project7/Demo.sln"
-  #- solution_name: "Projects/Project8/Demo.sln"
+  - solution_name: "Projects/Project7/Demo.sln"
+  - solution_name: "Projects/Project8/Demo.sln"
 
 ###############################################################################
 # Build Configuration
