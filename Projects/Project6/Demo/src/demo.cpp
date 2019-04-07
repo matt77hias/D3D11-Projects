@@ -133,7 +133,7 @@ namespace {
 
 		// Initialize a console.
 		InitializeConsole();
-		Print("Copyright (c) 2016-2018 Matthias Moulin.\n");
+		Print("Copyright (c) 2016-2019 Matthias Moulin.\n");
 
 		// Initialize a window.
 		{
