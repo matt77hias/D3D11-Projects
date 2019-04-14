@@ -35,7 +35,7 @@ Projects to start learning Direct3D 11 (D3D11).
   * d3d12.lib
   * dxgi.lib
   * (d3dcompiler.lib)
-* **Compiler**: MSVC++ 16.0.0
+* **Compiler**: MSVC++ 16.0.1
 * **IDE**: Visual Studio 2019
 
 ## Codebase
