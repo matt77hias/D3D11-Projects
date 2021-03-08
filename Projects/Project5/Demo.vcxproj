@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>15.0</VCProjectVersion>
+    <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{F9BA8891-AC7F-48A8-9005-CD8C73706D59}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Demo</RootNamespace>
