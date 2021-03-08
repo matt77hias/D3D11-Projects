@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>15.0</VCProjectVersion>
+    <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{7C0476A5-5582-4DA2-85CF-1876028A7482}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>fmt</RootNamespace>
