@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>15.0</VCProjectVersion>
+    <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{529BD7A2-F3E9-4EF7-878F-C469506CFA3F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>MAGE</RootNamespace>
