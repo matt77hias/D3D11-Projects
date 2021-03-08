@@ -6,6 +6,9 @@
 #pragma region
 
 #include <array>
+#include <cstddef>
+#include <tuple>
+#include <type_traits>
 #include <utility>
 
 #pragma endregion
