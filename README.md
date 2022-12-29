@@ -56,4 +56,4 @@ Based on:
   * [Windows Runtime C++ Template Library (WRL)](https://docs.microsoft.com/nl-be/cpp/windows/windows-runtime-cpp-template-library-wrl?view=vs-2017)
 * [std](https://en.cppreference.com/w/cpp/header)
 
-<p align="center">Copyright © 2016-2023 Matthias Moulin. All Rights Reserved.</p>
+<p align="center">Copyright © 2016 Matthias Moulin. All Rights Reserved.</p>
