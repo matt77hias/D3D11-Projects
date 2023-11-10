@@ -1,11 +1,11 @@
 [![Build status][s1]][av] [![Code quality][s2]][co]  [![License][s3]][li]
 
 [s1]: https://ci.appveyor.com/api/projects/status/y8ew5io98llltkk2?svg=true
-[s2]: https://api.codacy.com/project/badge/Grade/377d3777301f4bc09d1626de1c96ec8d
+[s2]: https://app.codacy.com/project/badge/Grade/377d3777301f4bc09d1626de1c96ec8d
 [s3]: https://img.shields.io/badge/licence-GPL%203.0-blue.svg
 
 [av]: https://ci.appveyor.com/project/matt77hias/direct3d-11-projects
-[co]: https://www.codacy.com/app/matt77hias/D3D11-Projects?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=matt77hias/D3D11-Projects&amp;utm_campaign=Badge_Grade
+[co]: https://app.codacy.com/gh/matt77hias/D3D11-Projects/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade
 [li]: https://raw.githubusercontent.com/matt77hias/D3D11-Projects/master/LICENSE.txt
 
 # D3D11-Projects
